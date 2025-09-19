@@ -153,6 +153,8 @@ class Google_Drive extends Base {
 				'authStatus'           => $this->get_auth_status(),
 				'redirectUri'          => home_url( '/wp-json/wpmudev/v1/drive/callback' ),
 				'hasCredentials'       => ! empty( $this->creds['client_id'] ) && ! empty( $this->creds['client_secret'] ),
+				// Translation strings
+				'i18n'                 => $this->get_i18n_strings(),
 			),
 		);
 	}
@@ -167,6 +169,89 @@ class Google_Drive extends Base {
 		$expires_at   = get_option( 'wpmudev_drive_token_expires', 0 );
 		
 		return ! empty( $access_token ) && time() < $expires_at;
+	}
+
+	/**
+	 * Get internationalization strings for JavaScript.
+	 *
+	 * @return array
+	 */
+	private function get_i18n_strings() {
+		return array(
+			// Page titles and descriptions
+			'pageTitle'                    => __( 'Google Drive Test', 'wpmudev-plugin-test' ),
+			'pageDescription'              => __( 'Test Google Drive API integration for applicant assessment', 'wpmudev-plugin-test' ),
+			
+			// Credentials section
+			'credentialsTitle'             => __( 'Set Google Drive Credentials', 'wpmudev-plugin-test' ),
+			'clientIdLabel'                => __( 'Client ID', 'wpmudev-plugin-test' ),
+			'clientIdHelp'                 => __( 'You can get Client ID from Google Cloud Console. Make sure to enable Google Drive API.', 'wpmudev-plugin-test' ),
+			'clientSecretLabel'            => __( 'Client Secret', 'wpmudev-plugin-test' ),
+			'clientSecretHelp'             => __( 'You can get Client Secret from Google Cloud Console.', 'wpmudev-plugin-test' ),
+			'redirectUriLabel'             => __( 'Please use this URL in your Google API\'s Authorized redirect URIs field.', 'wpmudev-plugin-test' ),
+			'requiredScopesTitle'          => __( 'Required scopes for Google Drive API:', 'wpmudev-plugin-test' ),
+			'saveCredentialsButton'        => __( 'Save Credentials', 'wpmudev-plugin-test' ),
+			
+			// Authentication section
+			'authTitle'                    => __( 'Authenticate with Google Drive', 'wpmudev-plugin-test' ),
+			'authDescription'              => __( 'Please authenticate with Google Drive to proceed with the test.', 'wpmudev-plugin-test' ),
+			'authPermissionsTitle'         => __( 'This test will require the following permissions:', 'wpmudev-plugin-test' ),
+			'authPermission1'              => __( 'View and manage Google Drive files', 'wpmudev-plugin-test' ),
+			'authPermission2'              => __( 'Upload new files to Drive', 'wpmudev-plugin-test' ),
+			'authPermission3'              => __( 'Create folders in Drive', 'wpmudev-plugin-test' ),
+			'changeCredentialsButton'      => __( 'Change Credentials', 'wpmudev-plugin-test' ),
+			'authenticateButton'           => __( 'Authenticate with Google Drive', 'wpmudev-plugin-test' ),
+			
+			// File management section
+			'filesTitle'                   => __( 'Google Drive Files', 'wpmudev-plugin-test' ),
+			'uploadFileButton'             => __( 'Upload File', 'wpmudev-plugin-test' ),
+			'createFolderButton'           => __( 'Create Folder', 'wpmudev-plugin-test' ),
+			'folderNamePlaceholder'        => __( 'Enter folder name', 'wpmudev-plugin-test' ),
+			'selectFileButton'             => __( 'Select File', 'wpmudev-plugin-test' ),
+			'noFileSelected'               => __( 'No file selected', 'wpmudev-plugin-test' ),
+			'refreshFilesButton'           => __( 'Refresh Files', 'wpmudev-plugin-test' ),
+			
+			// File types and actions
+			'fileTypeFolder'               => __( 'Folder', 'wpmudev-plugin-test' ),
+			'fileTypeFile'                 => __( 'File', 'wpmudev-plugin-test' ),
+			'downloadButton'               => __( 'Download', 'wpmudev-plugin-test' ),
+			'viewInDriveButton'            => __( 'View in Drive', 'wpmudev-plugin-test' ),
+			
+			// Messages and notices
+			'credentialsSaved'             => __( 'Credentials saved successfully!', 'wpmudev-plugin-test' ),
+			'credentialsSaveError'         => __( 'Failed to save credentials', 'wpmudev-plugin-test' ),
+			'authSuccess'                  => __( 'Authentication successful!', 'wpmudev-plugin-test' ),
+			'authError'                    => __( 'Authentication failed', 'wpmudev-plugin-test' ),
+			'fileUploaded'                 => __( 'File uploaded successfully!', 'wpmudev-plugin-test' ),
+			'fileUploadError'              => __( 'Failed to upload file', 'wpmudev-plugin-test' ),
+			'folderCreated'                => __( 'Folder created successfully!', 'wpmudev-plugin-test' ),
+			'folderCreateError'            => __( 'Failed to create folder', 'wpmudev-plugin-test' ),
+			'filesLoaded'                  => __( 'Files loaded successfully!', 'wpmudev-plugin-test' ),
+			'filesLoadError'               => __( 'Failed to load files', 'wpmudev-plugin-test' ),
+			
+			// Validation messages
+			'enterClientId'                => __( 'Please enter Client ID', 'wpmudev-plugin-test' ),
+			'enterClientSecret'            => __( 'Please enter Client Secret', 'wpmudev-plugin-test' ),
+			'enterBothCredentials'         => __( 'Please enter both Client ID and Client Secret', 'wpmudev-plugin-test' ),
+			'enterFolderName'              => __( 'Please enter a folder name', 'wpmudev-plugin-test' ),
+			'selectFile'                   => __( 'Please select a file', 'wpmudev-plugin-test' ),
+			
+			// Error messages
+			'errorSavingCredentials'       => __( 'Error saving credentials:', 'wpmudev-plugin-test' ),
+			'errorAuthenticating'          => __( 'Error authenticating:', 'wpmudev-plugin-test' ),
+			'errorUploadingFile'           => __( 'Error uploading file:', 'wpmudev-plugin-test' ),
+			'errorCreatingFolder'          => __( 'Error creating folder:', 'wpmudev-plugin-test' ),
+			'errorLoadingFiles'            => __( 'Error loading files:', 'wpmudev-plugin-test' ),
+			
+			// Loading states
+			'loading'                      => __( 'Loading...', 'wpmudev-plugin-test' ),
+			'saving'                       => __( 'Saving...', 'wpmudev-plugin-test' ),
+			'uploading'                    => __( 'Uploading...', 'wpmudev-plugin-test' ),
+			'creating'                     => __( 'Creating...', 'wpmudev-plugin-test' ),
+			
+			// Empty states
+			'noFilesFound'                 => __( 'No files found in your Drive. Upload a file or create a folder to get started.', 'wpmudev-plugin-test' ),
+		);
 	}
 
 	/**

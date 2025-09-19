@@ -92,7 +92,71 @@ final class Loader extends Base {
 	 * @return void
 	 */
 	private function init() {
+		// Initialize core functionality first
 		App\Admin_Pages\Google_Drive::instance()->init();
 		Endpoints\V1\Drive_API::instance()->init();
+		
+		// Try to load optional components
+		$this->load_optional_components();
+		
+		// Add batch processing action
+		add_action( 'wpmudev_process_posts_batch', array( $this, 'process_posts_batch' ), 10, 3 );
+		
+		// Register WP-CLI command
+		if ( defined( 'WP_CLI' ) && WP_CLI && class_exists( 'WPMUDEV\\PluginTest\\App\\CLI\\Posts_Maintenance_Command' ) ) {
+			try {
+				\WP_CLI::add_command( 'wpmudev', 'WPMUDEV\\PluginTest\\App\\CLI\\Posts_Maintenance_Command' );
+			} catch ( Exception $e ) {
+				// Silently fail if WP-CLI command registration fails
+				error_log( 'WPMU DEV Plugin Test: Failed to register WP-CLI command: ' . $e->getMessage() );
+			}
+		}
+	}
+
+	/**
+	 * Load optional components.
+	 */
+	private function load_optional_components() {
+		// Try to load Dependency Manager
+		if ( ! class_exists( 'WPMUDEV\\PluginTest\\Core\\Dependency_Manager' ) ) {
+			$file_path = WPMUDEV_PLUGINTEST_DIR . 'core/class-dependency-manager.php';
+			if ( file_exists( $file_path ) ) {
+				require_once $file_path;
+			}
+		}
+		
+        // Try to load Posts Maintenance
+        if ( ! class_exists( 'WPMUDEV\\PluginTest\\App\\Admin_Pages\\PostsMaintenance' ) ) {
+            $file_path = WPMUDEV_PLUGINTEST_DIR . 'app/admin-pages/class-posts-maintenance.php';
+            if ( file_exists( $file_path ) ) {
+                require_once $file_path;
+            }
+        }
+		
+		// Try to load CLI Command (only when WP-CLI is available)
+		if ( defined( 'WP_CLI' ) && WP_CLI && ! class_exists( 'WPMUDEV\\PluginTest\\App\\CLI\\Posts_Maintenance_Command' ) ) {
+			$file_path = WPMUDEV_PLUGINTEST_DIR . 'app/cli/class-posts-maintenance-command.php';
+			if ( file_exists( $file_path ) ) {
+				require_once $file_path;
+			}
+		}
+		
+		// Initialize components if they exist
+		if ( class_exists( 'WPMUDEV\\PluginTest\\Core\\Dependency_Manager' ) ) {
+			Core\Dependency_Manager::instance()->init();
+		}
+		
+        if ( class_exists( 'WPMUDEV\\PluginTest\\App\\Admin_Pages\\PostsMaintenance' ) ) {
+            App\Admin_Pages\PostsMaintenance::instance()->init();
+        }
+	}
+
+	/**
+	 * Process posts batch.
+	 */
+	public function process_posts_batch( $post_types, $batch_size, $offset ) {
+        if ( class_exists( 'WPMUDEV\\PluginTest\\App\\Admin_Pages\\PostsMaintenance' ) ) {
+            App\Admin_Pages\PostsMaintenance::instance()->process_posts_batch( $post_types, $batch_size, $offset );
+        }
 	}
 }
