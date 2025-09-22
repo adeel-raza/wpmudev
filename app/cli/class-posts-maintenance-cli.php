@@ -30,7 +30,7 @@ class PostsMaintenanceCLI extends WP_CLI_Command {
 	 * Initialize the CLI command.
 	 */
 	public function __construct() {
-		// Don't instantiate PostsMaintenance here as WordPress may not be fully loaded
+		// Don't instantiate PostsMaintenance here as WordPress may not be fully loaded.
 	}
 
 	/**
@@ -98,7 +98,7 @@ class PostsMaintenanceCLI extends WP_CLI_Command {
 	 * @param array $assoc_args Associative arguments.
 	 */
 	public function scan( $args, $assoc_args ) {
-		// Parse arguments
+		// Parse arguments.
 		$post_types = isset( $assoc_args['post-types'] ) ?
 			array_map( 'trim', explode( ',', $assoc_args['post-types'] ) ) :
 			array( 'post', 'page' );
@@ -110,12 +110,12 @@ class PostsMaintenanceCLI extends WP_CLI_Command {
 		$dry_run = isset( $assoc_args['dry-run'] );
 		$verbose = isset( $assoc_args['verbose'] );
 
-		// Validate batch size
+		// Validate batch size.
 		if ( $batch_size < 1 || $batch_size > 100 ) {
 			WP_CLI::error( 'Batch size must be between 1 and 100.' );
 		}
 
-		// Validate post types
+		// Validate post types.
 		$available_post_types = get_post_types( array( 'public' => true ), 'names' );
 		$invalid_post_types   = array_diff( $post_types, $available_post_types );
 
@@ -123,15 +123,15 @@ class PostsMaintenanceCLI extends WP_CLI_Command {
 			WP_CLI::error( 'Invalid post types: ' . implode( ', ', $invalid_post_types ) );
 		}
 
-		// Get total count
+		// Get total count.
 		$total_posts = $this->get_total_posts_count( $post_types );
 
-		if ( $total_posts === 0 ) {
+		if ( 0 === $total_posts ) {
 			WP_CLI::warning( 'No posts found for the specified post types.' );
 			return;
 		}
 
-		// Show scan information
+		// Show scan information.
 		WP_CLI::log( '' );
 		WP_CLI::log( 'Posts Maintenance Scan' );
 		WP_CLI::log( '=====================' );
@@ -167,7 +167,7 @@ class PostsMaintenanceCLI extends WP_CLI_Command {
 		while ( $processed < $total_posts ) {
 			++$batch_count;
 
-			// Safety check to prevent infinite loops
+			// Safety check to prevent infinite loops.
 			if ( $batch_count > 1000 ) {
 				WP_CLI::warning( 'Safety limit reached (1000 batches). Stopping scan.' );
 				break;
@@ -177,7 +177,7 @@ class PostsMaintenanceCLI extends WP_CLI_Command {
 				WP_CLI::log( "Processing batch {$batch_count} (page: {$paged})" );
 			}
 
-			// Get posts for this batch using paged instead of offset
+			// Get posts for this batch using paged instead of offset.
 			$args = array(
 				'post_type'      => $post_types,
 				'post_status'    => 'publish',
@@ -197,7 +197,7 @@ class PostsMaintenanceCLI extends WP_CLI_Command {
 
 			$batch_processed = 0;
 			foreach ( $posts as $post_id ) {
-				// Update post meta with current timestamp
+				// Update post meta with current timestamp.
 				update_post_meta( $post_id, 'wpmudev_test_last_scan', time() );
 				++$batch_processed;
 				++$processed;
@@ -213,7 +213,7 @@ class PostsMaintenanceCLI extends WP_CLI_Command {
 				WP_CLI::log( "  Batch {$batch_count} completed: {$batch_processed} posts processed" );
 			}
 
-			// If we got fewer posts than requested, we've reached the end
+			// If we got fewer posts than requested, we've reached the end.
 			if ( count( $posts ) < $batch_size ) {
 				break;
 			}
@@ -225,7 +225,7 @@ class PostsMaintenanceCLI extends WP_CLI_Command {
 		$end_time   = microtime( true );
 		$total_time = round( $end_time - $start_time, 2 );
 
-		// Show completion summary
+		// Show completion summary.
 		WP_CLI::log( '' );
 		WP_CLI::success( 'Scan completed successfully!' );
 		WP_CLI::log( "Total posts processed: {$processed}" );
@@ -256,7 +256,7 @@ class PostsMaintenanceCLI extends WP_CLI_Command {
 		while ( $processed < $total_posts ) {
 			++$batch_count;
 
-			// Safety check to prevent infinite loops
+			// Safety check to prevent infinite loops.
 			if ( $batch_count > 1000 ) {
 				WP_CLI::warning( 'Safety limit reached (1000 batches). Stopping dry run.' );
 				break;
@@ -266,7 +266,7 @@ class PostsMaintenanceCLI extends WP_CLI_Command {
 				WP_CLI::log( "Would process batch {$batch_count} (page: {$paged})" );
 			}
 
-			// Get posts for this batch using paged instead of offset
+			// Get posts for this batch using paged instead of offset.
 			$args = array(
 				'post_type'      => $post_types,
 				'post_status'    => 'publish',
@@ -300,7 +300,7 @@ class PostsMaintenanceCLI extends WP_CLI_Command {
 				WP_CLI::log( "  Batch {$batch_count} would process: {$batch_processed} posts" );
 			}
 
-			// If we got fewer posts than requested, we've reached the end
+			// If we got fewer posts than requested, we've reached the end.
 			if ( count( $posts ) < $batch_size ) {
 				break;
 			}
@@ -312,7 +312,7 @@ class PostsMaintenanceCLI extends WP_CLI_Command {
 		$end_time   = microtime( true );
 		$total_time = round( $end_time - $start_time, 2 );
 
-		// Show dry run summary
+		// Show dry run summary.
 		WP_CLI::log( '' );
 		WP_CLI::success( 'Dry run completed!' );
 		WP_CLI::log( "Posts that would be processed: {$processed}" );
@@ -387,13 +387,13 @@ class PostsMaintenanceCLI extends WP_CLI_Command {
 			WP_CLI::confirm( 'Are you sure you want to reset the scan status and clear all scan data?' );
 		}
 
-		// Reset status to idle (same as admin functionality)
+		// Reset status to idle (same as admin functionality).
 		update_option( 'wpmudev_scan_status', 'idle' );
 
-		// Clear any scheduled events
+		// Clear any scheduled events.
 		wp_clear_scheduled_hook( 'wpmudev_process_posts_batch' );
 
-		// Clear all scan-related options
+		// Clear all scan-related options.
 		delete_option( 'wpmudev_scan_progress' );
 		delete_option( 'wpmudev_scan_notification' );
 		delete_option( 'wpmudev_scan_start_time' );

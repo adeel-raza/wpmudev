@@ -17,13 +17,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-// Prevent loading during PHPUnit tests to avoid conflicts
+// Prevent loading during PHPUnit tests to avoid conflicts.
 if ( defined( 'PHPUNIT_RUNNING' ) && PHPUNIT_RUNNING ) {
 	return;
 }
 
 
-// Load Composer autoloader
+// Load Composer autoloader.
 if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';
 }
@@ -92,7 +92,7 @@ class WPMUDEV_PluginTest {
 	 * Class initializer.
 	 */
 	public function load() {
-		// Load translations on init hook
+		// Load translations on init hook.
 		add_action(
 			'init',
 			function () {
@@ -104,13 +104,13 @@ class WPMUDEV_PluginTest {
 			}
 		);
 
-		// Load Posts Maintenance file
+		// Load Posts Maintenance file.
 		$posts_file = __DIR__ . '/app/admin-pages/class-posts-maintenance.php';
 		if ( file_exists( $posts_file ) ) {
 			require_once $posts_file;
 		}
 
-		// Initialize Posts Maintenance on init hook (after translations are loaded)
+		// Initialize Posts Maintenance on init hook (after translations are loaded).
 		add_action(
 			'init',
 			function () {
@@ -120,7 +120,7 @@ class WPMUDEV_PluginTest {
 			}
 		);
 
-		// Initialize Core Loader on init hook
+		// Initialize Core Loader on init hook.
 		add_action(
 			'init',
 			function () {
@@ -128,9 +128,9 @@ class WPMUDEV_PluginTest {
 			}
 		);
 
-		// Initialize dependency management
+		// Initialize dependency management.
 
-		// Load Google Drive components
+		// Load Google Drive components.
 		$google_drive_file = __DIR__ . '/app/admin-pages/class-googledrive-settings.php';
 		if ( file_exists( $google_drive_file ) ) {
 			require_once $google_drive_file;
@@ -141,7 +141,7 @@ class WPMUDEV_PluginTest {
 			require_once $google_drive_rest_file;
 		}
 
-		// Initialize Google Drive components on init hook (after translations are loaded)
+		// Initialize Google Drive components on init hook (after translations are loaded).
 		add_action(
 			'init',
 			function () {
@@ -154,7 +154,7 @@ class WPMUDEV_PluginTest {
 			}
 		);
 
-		// Load WP-CLI commands if WP-CLI is available
+		// Load WP-CLI commands if WP-CLI is available.
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			require_once __DIR__ . '/app/cli/class-posts-maintenance-cli.php';
 			\WP_CLI::add_command( 'wpmudev posts', 'WPMUDEV\\PluginTest\\App\\CLI\\PostsMaintenanceCLI' );
@@ -172,7 +172,7 @@ if ( function_exists( 'add_action' ) ) {
 		1
 	);
 
-	// Cleanup on plugin deactivation
+	// Cleanup on plugin deactivation.
 	register_deactivation_hook(
 		__FILE__,
 		function () {

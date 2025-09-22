@@ -18,6 +18,9 @@ use WPMUDEV\PluginTest\Base;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
+/**
+ * Loader class for managing plugin components.
+ */
 final class Loader extends Base {
 	/**
 	 * Settings helper class instance.
@@ -89,10 +92,10 @@ final class Loader extends Base {
 	 * @return void
 	 */
 	private function init() {
-		// Load optional components first
+		// Load optional components first.
 		$this->load_optional_components();
 
-		// Initialize core functionality after dependencies are loaded
+		// Initialize core functionality after dependencies are loaded.
 		if ( class_exists( 'WPMUDEV\\PluginTest\\App\\Admin_Pages\\Google_Drive' ) ) {
 			\WPMUDEV\PluginTest\App\Admin_Pages\Google_Drive::instance()->init();
 		}
@@ -105,7 +108,7 @@ final class Loader extends Base {
 	 * Load optional components.
 	 */
 	private function load_optional_components() {
-		// Try to load Dependency Manager
+		// Try to load Dependency Manager.
 		if ( ! class_exists( 'WPMUDEV\\PluginTest\\Core\\Dependency_Manager' ) ) {
 			$file_path = WPMUDEV_PLUGINTEST_DIR . 'core/class-dependency-manager.php';
 			if ( file_exists( $file_path ) ) {
@@ -113,7 +116,7 @@ final class Loader extends Base {
 			}
 		}
 
-		// Try to load Google Drive admin page
+		// Try to load Google Drive admin page.
 		if ( ! class_exists( 'WPMUDEV\\PluginTest\\App\\Admin_Pages\\Google_Drive' ) ) {
 			$file_path = WPMUDEV_PLUGINTEST_DIR . 'app/admin-pages/class-googledrive-settings.php';
 			if ( file_exists( $file_path ) ) {
@@ -121,7 +124,7 @@ final class Loader extends Base {
 			}
 		}
 
-		// Try to load Google Drive REST API
+		// Try to load Google Drive REST API.
 		if ( ! class_exists( 'WPMUDEV\\PluginTest\\Endpoints\\V1\\Drive_API' ) ) {
 			$file_path = WPMUDEV_PLUGINTEST_DIR . 'app/endpoints/v1/class-googledrive-rest.php';
 			if ( file_exists( $file_path ) ) {
@@ -129,7 +132,7 @@ final class Loader extends Base {
 			}
 		}
 
-		// Try to load Posts Maintenance
+		// Try to load Posts Maintenance.
 		if ( ! class_exists( 'WPMUDEV\\PluginTest\\App\\Admin_Pages\\PostsMaintenance' ) ) {
 			$file_path = WPMUDEV_PLUGINTEST_DIR . 'app/admin-pages/class-posts-maintenance.php';
 			if ( file_exists( $file_path ) ) {
@@ -137,13 +140,13 @@ final class Loader extends Base {
 			}
 		}
 
-		// Load dependency checker
+		// Load dependency checker.
 		$file_path = WPMUDEV_PLUGINTEST_DIR . 'core/class-dependency-checker.php';
 		if ( file_exists( $file_path ) ) {
 			require_once $file_path;
 		}
 
-		// Try to load CLI Command (only when WP-CLI is available)
+		// Try to load CLI Command (only when WP-CLI is available).
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			$file_path = WPMUDEV_PLUGINTEST_DIR . 'app/cli/class-posts-maintenance-cli.php';
 			if ( file_exists( $file_path ) ) {
@@ -151,14 +154,14 @@ final class Loader extends Base {
 			}
 		}
 
-		// Check dependencies before loading
+		// Check dependencies before loading.
 		if ( class_exists( 'WPMUDEV\\PluginTest\\Core\\Dependency_Checker' ) ) {
 			if ( ! \WPMUDEV\PluginTest\Core\Dependency_Checker::check_dependencies() ) {
-				return; // Stop loading if dependencies are missing
+				return; // Stop loading if dependencies are missing.
 			}
 		}
 
-		// PostsMaintenance is now initialized in the main plugin file
+		// PostsMaintenance is now initialized in the main plugin file.
 	}
 
 	/**

@@ -45,7 +45,8 @@ module.exports = function (grunt) {
                 dot: true,
                 filter: 'isFile',
             },
-            assets: ['assets/css/**', 'assets/js/**'],
+            // Only clean assets inside build, not in dev!
+            assets: ['build/<%= pkg.name %>/assets/css/**', 'build/<%= pkg.name %>/assets/js/**'],
             folder_v2: ['build/**'],
         },
 
@@ -99,7 +100,6 @@ module.exports = function (grunt) {
                 dest: '<%= pkg.name %>/',
             },
         },
-
     })
 
     grunt.loadNpmTasks('grunt-search')
@@ -116,7 +116,6 @@ module.exports = function (grunt) {
             return;
         }
 
-        // Remove unused services
         fs.readdirSync(serviceDir).forEach(file => {
             const fullPath = path.join(serviceDir, file);
             const isDir = fs.lstatSync(fullPath).isDirectory();
@@ -143,7 +142,6 @@ module.exports = function (grunt) {
             return;
         }
 
-        // Remove documentation, tests, and unnecessary files
         const removePatterns = [
             '**/*.md',
             '**/*.txt',
@@ -218,7 +216,6 @@ module.exports = function (grunt) {
             '**/google/auth/**'
         ];
 
-        // Remove files that are clearly safe to remove
         removePatterns.forEach(pattern => {
             const files = glob.sync(pattern, { cwd: buildDir, nodir: true });
             files.forEach(file => {
@@ -233,7 +230,6 @@ module.exports = function (grunt) {
         grunt.log.ok('Pruned vendor files: removed documentation, tests, and unnecessary files.');
     });
 
-    // Simple build task without Mozart scoping
     grunt.registerTask('simple-build', 'Simple build without dependency scoping', function () {
         grunt.log.writeln('Building plugin without dependency scoping...');
         grunt.log.ok('Simple build completed successfully!');
@@ -247,7 +243,6 @@ module.exports = function (grunt) {
         grunt.log.writeln('----------')
     })
 
-    // Basic build task with pruning
     grunt.registerTask('build', [
         'checktextdomain',
         'simple-build',
@@ -257,16 +252,15 @@ module.exports = function (grunt) {
         'compress:pro',
     ])
 
-    // Alias for build:pro
     grunt.registerTask('build:pro', ['build'])
 
-    // Development task for simple build
     grunt.registerTask('scope-deps', ['simple-build'])
 
-    // Pre-build clean task
+    // Pre-build clean task (SAFE – no dev asset deletion)
     grunt.registerTask('preBuildClean', [
         'clean:temp',
-        'clean:assets',
         'clean:folder_v2',
+        'clean:assets', // now only cleans assets in build/
     ])
 }
+

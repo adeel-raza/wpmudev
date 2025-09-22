@@ -66,7 +66,7 @@ composer install
 composer install --dev
 
 # Set up WordPress test environment
-bin/install-wp-tests.sh wordpress_test root '' localhost latest
+bin/install-wp-tests.sh wordpress_test [your_mysql_root_user] '[your_mysql_user_passwd]' localhost latest
 
 # Run tests
 vendor/bin/phpunit

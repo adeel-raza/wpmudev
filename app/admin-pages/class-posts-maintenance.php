@@ -90,30 +90,30 @@ class PostsMaintenance extends Base {
 	 * Enqueue assets.
 	 */
 	public function enqueue_assets() {
-		$screen = get_current_screen();
+		$screen                    = get_current_screen();
 		$is_posts_maintenance_page = false;
-		
-		// Check if we're on the Posts Maintenance page
+
+		// Check if we're on the Posts Maintenance page.
 		if ( $screen ) {
 			$is_posts_maintenance_page = (
 				'toplevel_page_' . $this->page_slug === $screen->id ||
 				( isset( $_GET['page'] ) && $_GET['page'] === $this->page_slug )
 			);
 		}
-		
+
 		if ( $is_posts_maintenance_page ) {
 			wp_enqueue_script( 'jquery' );
 			wp_enqueue_script( 'wp-util' );
-			
-			// Enqueue custom CSS
+
+			// Enqueue custom CSS.
 			wp_enqueue_style(
 				'wpmudev-posts-maintenance-admin',
 				WPMUDEV_PLUGINTEST_ASSETS_URL . '/css/posts-maintenance-admin.css',
 				array(),
 				WPMUDEV_PLUGINTEST_VERSION
 			);
-			
-			// Enqueue custom JavaScript
+
+			// Enqueue custom JavaScript.
 			wp_enqueue_script(
 				'wpmudev-posts-maintenance-admin',
 				WPMUDEV_PLUGINTEST_ASSETS_URL . '/js/posts-maintenance-admin.js',
@@ -121,8 +121,8 @@ class PostsMaintenance extends Base {
 				WPMUDEV_PLUGINTEST_VERSION,
 				true
 			);
-			
-			// Localize script for AJAX
+
+			// Localize script for AJAX.
 			wp_localize_script(
 				'wpmudev-posts-maintenance-admin',
 				'wpmudevPostsMaintenance',
@@ -158,8 +158,8 @@ class PostsMaintenance extends Base {
 
 		$post_types = isset( $_POST['post_types'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['post_types'] ) ) : array( 'post', 'page' );
 		$batch_size = isset( $_POST['batch_size'] ) ? intval( wp_unslash( $_POST['batch_size'] ) ) : 10;
-		
-		// Ensure batch size is within valid range
+
+		// Ensure batch size is within valid range.
 		$batch_size = max( 1, min( 100, $batch_size ) );
 
 		// Start background processing.
@@ -190,11 +190,11 @@ class PostsMaintenance extends Base {
 		$progress = get_option( 'wpmudev_scan_progress', array() );
 		$status   = get_option( 'wpmudev_scan_status', 'idle' );
 
-		// If status is 'running' but no progress has been made, reset to idle
-		if ( $status === 'running' ) {
+		// If status is 'running' but no progress has been made, reset to idle.
+		if ( 'running' === $status ) {
 			$progress = get_option( 'wpmudev_scan_progress', array() );
 			if ( empty( $progress ) || ( isset( $progress['processed'] ) && 0 === $progress['processed'] ) ) {
-				// Check if scan has been running for more than 60 seconds without progress
+				// Check if scan has been running for more than 60 seconds without progress.
 				$scan_start = get_option( 'wpmudev_scan_start_time', 0 );
 				if ( $scan_start > 0 && ( time() - $scan_start ) > 60 ) {
 					update_option( 'wpmudev_scan_status', 'idle' );
@@ -207,14 +207,14 @@ class PostsMaintenance extends Base {
 							'timestamp' => time(),
 						)
 					);
-					
-					// Clear progress data to prevent issues with subsequent scans
+
+					// Clear progress data to prevent issues with subsequent scans.
 					delete_option( 'wpmudev_scan_progress' );
 				}
 			}
 		}
 
-		// Calculate progress percentage
+		// Calculate progress percentage.
 		$progress_percentage = 0;
 		if ( ! empty( $progress ) && isset( $progress['total'] ) && $progress['total'] > 0 ) {
 			$progress_percentage = ( $progress['processed'] / $progress['total'] ) * 100;
@@ -222,11 +222,11 @@ class PostsMaintenance extends Base {
 
 		wp_send_json_success(
 			array(
-				'progress'         => $progress_percentage,
-				'processed_posts'  => isset( $progress['processed'] ) ? $progress['processed'] : 0,
-				'total_posts'      => isset( $progress['total'] ) ? $progress['total'] : 0,
-				'is_running'       => $status === 'running',
-				'status'           => $status,
+				'progress'        => $progress_percentage,
+				'processed_posts' => isset( $progress['processed'] ) ? $progress['processed'] : 0,
+				'total_posts'     => isset( $progress['total'] ) ? $progress['total'] : 0,
+				'is_running'      => 'running' === $status,
+				'status'          => $status,
 			)
 		);
 	}
@@ -246,13 +246,13 @@ class PostsMaintenance extends Base {
 			wp_send_json_error( array( 'message' => 'Insufficient permissions' ) );
 		}
 
-		// Reset status to idle
+		// Reset status to idle.
 		update_option( 'wpmudev_scan_status', 'idle' );
 
-		// Clear any scheduled events
+		// Clear any scheduled events.
 		wp_clear_scheduled_hook( 'wpmudev_process_posts_batch' );
 
-		// Clear all scan-related options
+		// Clear all scan-related options.
 		delete_option( 'wpmudev_scan_progress' );
 		delete_option( 'wpmudev_scan_notification' );
 		delete_option( 'wpmudev_scan_start_time' );
@@ -280,7 +280,7 @@ class PostsMaintenance extends Base {
 			wp_send_json_error( array( 'message' => 'Insufficient permissions' ) );
 		}
 
-		// Clear notification
+		// Clear notification.
 		delete_option( 'wpmudev_scan_notification' );
 
 		wp_send_json_success(
@@ -299,21 +299,21 @@ class PostsMaintenance extends Base {
 	 * @param int   $batch_size Number of posts to process per batch.
 	 */
 	private function start_background_scan( $post_types, $batch_size ) {
-		// Clear any existing scan data and scheduled events
+		// Clear any existing scan data and scheduled events.
 		wp_clear_scheduled_hook( 'wpmudev_process_posts_batch' );
 		delete_option( 'wpmudev_scan_notification' );
 
-		// Set scan start time to prevent duplicate processing
+		// Set scan start time to prevent duplicate processing.
 		$scan_start_time = time();
 		update_option( 'wpmudev_scan_start_time', $scan_start_time );
 
 		// Update scan status.
 		update_option( 'wpmudev_scan_status', 'running' );
 
-		// Get total count first
+		// Get total count first.
 		$total_posts = $this->get_total_posts_count( $post_types );
 
-		// Initialize progress with correct total
+		// Initialize progress with correct total.
 		update_option(
 			'wpmudev_scan_progress',
 			array(
@@ -324,10 +324,10 @@ class PostsMaintenance extends Base {
 			)
 		);
 
-		// Schedule first batch with immediate execution
+		// Schedule first batch with immediate execution.
 		wp_schedule_single_event( time(), 'wpmudev_process_posts_batch', array( $post_types, $batch_size, 0 ) );
-		
-		// Trigger WordPress cron manually to ensure immediate execution
+
+		// Trigger WordPress cron manually to ensure immediate execution.
 		spawn_cron();
 	}
 
@@ -348,7 +348,7 @@ class PostsMaintenance extends Base {
 		$query = new \WP_Query( $args );
 		$count = $query->found_posts;
 
-		// Debug logging removed for performance
+		// Debug logging removed for performance.
 
 		return $count;
 	}
@@ -361,7 +361,7 @@ class PostsMaintenance extends Base {
 	 * @param int   $offset     Offset for the current batch.
 	 */
 	public function process_posts_batch( $post_types, $batch_size, $offset ) {
-		// Debug logging removed for performance
+		// Debug logging removed for performance.
 
 		$args = array(
 			'post_type'      => $post_types,
@@ -374,11 +374,11 @@ class PostsMaintenance extends Base {
 		$query = new \WP_Query( $args );
 		$posts = $query->posts;
 
-		// Debug logging removed for performance
+		// Debug logging removed for performance.
 
 		$processed = 0;
 		foreach ( $posts as $post_id ) {
-			// Always process posts - update post meta with current timestamp
+			// Always process posts - update post meta with current timestamp.
 			update_post_meta( $post_id, 'wpmudev_test_last_scan', time() );
 			++$processed;
 		}
@@ -388,18 +388,18 @@ class PostsMaintenance extends Base {
 		$progress['processed']    += $processed;
 		$progress['current_batch'] = $offset + $batch_size;
 
-		// Ensure processed count doesn't exceed total
+		// Ensure processed count doesn't exceed total.
 		if ( $progress['processed'] > $progress['total'] ) {
 			$progress['processed'] = $progress['total'];
 		}
 
 		update_option( 'wpmudev_scan_progress', $progress );
 
-		// Debug logging removed for performance
+		// Debug logging removed for performance.
 
-		// Check for timeout (scan running for more than 5 minutes)
+		// Check for timeout (scan running for more than 5 minutes).
 		$scan_start_time = get_option( 'wpmudev_scan_start_time', 0 );
-		if ( $scan_start_time && ( time() - $scan_start_time ) > 300 ) { // 5 minutes timeout
+		if ( $scan_start_time && ( time() - $scan_start_time ) > 300 ) { // 5 minutes timeout.
 			update_option( 'wpmudev_scan_status', 'idle' );
 			update_option(
 				'wpmudev_scan_notification',
@@ -410,20 +410,20 @@ class PostsMaintenance extends Base {
 				)
 			);
 			wp_clear_scheduled_hook( 'wpmudev_process_posts_batch' );
-			
-			// Clear progress data to prevent issues with subsequent scans
+
+			// Clear progress data to prevent issues with subsequent scans.
 			delete_option( 'wpmudev_scan_progress' );
 			return;
 		}
 
 		// Check if we need to process more batches.
-		// If we got no posts or have processed all posts, we've reached the end
-		if ( count( $posts ) == 0 || $progress['processed'] >= $progress['total'] ) {
-			// Scan completed - show completion notification
+		// If we got no posts or have processed all posts, we've reached the end.
+		if ( 0 === count( $posts ) || $progress['processed'] >= $progress['total'] ) {
+			// Scan completed - show completion notification.
 			update_option( 'wpmudev_scan_status', 'completed' );
 			update_option( 'wpmudev_last_scan_time', time() );
 
-			// Store completion notification with correct count
+			// Store completion notification with correct count.
 			$actual_processed = min( $progress['processed'], $progress['total'] );
 			update_option(
 				'wpmudev_scan_notification',
@@ -434,13 +434,13 @@ class PostsMaintenance extends Base {
 				)
 			);
 
-			// Clear any remaining scheduled events
+			// Clear any remaining scheduled events.
 			wp_clear_scheduled_hook( 'wpmudev_process_posts_batch' );
-			
-			// Clear progress data to prevent issues with subsequent scans
+
+			// Clear progress data to prevent issues with subsequent scans.
 			delete_option( 'wpmudev_scan_progress' );
 		} else {
-			// Schedule next batch with a 1-second delay
+			// Schedule next batch with a 1-second delay.
 			wp_schedule_single_event( time() + 1, 'wpmudev_process_posts_batch', array( $post_types, $batch_size, $offset + $batch_size ) );
 		}
 	}
@@ -493,13 +493,13 @@ class PostsMaintenance extends Base {
 
 			<div class="sui-box">
 				<div class="sui-box-header">
-					<h2 class="sui-box-title"><?php _e( 'Posts Scan Status', 'wpmudev-plugin-test' ); ?></h2>
+					<h2 class="sui-box-title"><?php esc_html_e( 'Posts Scan Status', 'wpmudev-plugin-test' ); ?></h2>
 				</div>
 				<div class="sui-box-body">
 					<div id="scan-status">
-						<p><strong><?php _e( 'Status:', 'wpmudev-plugin-test' ); ?></strong> <span id="current-status"><?php echo esc_html( ucfirst( $status ) ); ?></span></p>
+						<p><strong><?php esc_html_e( 'Status:', 'wpmudev-plugin-test' ); ?></strong> <span id="current-status"><?php echo esc_html( ucfirst( $status ) ); ?></span></p>
 						<?php if ( $last_scan > 0 ) : ?>
-							<p><strong><?php _e( 'Last Scan:', 'wpmudev-plugin-test' ); ?></strong> <?php echo esc_html( date( 'Y-m-d H:i:s', $last_scan ) ); ?></p>
+							<p><strong><?php esc_html_e( 'Last Scan:', 'wpmudev-plugin-test' ); ?></strong> <?php echo esc_html( gmdate( 'Y-m-d H:i:s', $last_scan ) ); ?></p>
 						<?php endif; ?>
 						<div id="progress-bar">
 							<div class="progress-bar">
@@ -513,32 +513,32 @@ class PostsMaintenance extends Base {
 
 			<div class="sui-box">
 				<div class="sui-box-header">
-					<h2 class="sui-box-title"><?php _e( 'Scan Configuration', 'wpmudev-plugin-test' ); ?></h2>
+					<h2 class="sui-box-title"><?php esc_html_e( 'Scan Configuration', 'wpmudev-plugin-test' ); ?></h2>
 				</div>
 				<div class="sui-box-body">
 					<form id="scan-config-form">
 						<input type="hidden" id="scan_nonce" value="<?php echo esc_attr( wp_create_nonce( 'wpmudev_scan_posts' ) ); ?>">
 						<table class="form-table">
 							<tr>
-								<th scope="row"><?php _e( 'Post Types', 'wpmudev-plugin-test' ); ?></th>
+								<th scope="row"><?php esc_html_e( 'Post Types', 'wpmudev-plugin-test' ); ?></th>
 								<td>
 									<?php
 									$available_post_types = get_post_types( array( 'public' => true ), 'objects' );
 									foreach ( $available_post_types as $post_type ) :
-										$checked = in_array( $post_type->name, $post_types ) ? 'checked' : '';
+										$checked = in_array( $post_type->name, $post_types, true ) ? 'checked' : '';
 										?>
 										<label>
-											<input type="checkbox" name="post_types[]" value="<?php echo esc_attr( $post_type->name ); ?>" <?php echo $checked; ?>>
+											<input type="checkbox" name="post_types[]" value="<?php echo esc_attr( $post_type->name ); ?>" <?php echo esc_attr( $checked ); ?>>
 											<?php echo esc_html( $post_type->label ); ?>
 										</label><br>
 									<?php endforeach; ?>
 								</td>
 							</tr>
 							<tr>
-								<th scope="row"><?php _e( 'Batch Size', 'wpmudev-plugin-test' ); ?></th>
+								<th scope="row"><?php esc_html_e( 'Batch Size', 'wpmudev-plugin-test' ); ?></th>
 								<td>
 									<input type="number" id="batch_size" name="batch_size" value="10" min="1" max="100" class="regular-text">
-									<p class="description"><?php _e( 'Number of posts to process per batch (1-100)', 'wpmudev-plugin-test' ); ?></p>
+									<p class="description"><?php esc_html_e( 'Number of posts to process per batch (1-100)', 'wpmudev-plugin-test' ); ?></p>
 								</td>
 							</tr>
 						</table>
@@ -547,13 +547,13 @@ class PostsMaintenance extends Base {
 					<div class="sui-box-footer">
 						<div class="sui-actions-right">
 							<button type="button" id="reset-status" class="button button-secondary">
-								<?php _e( 'Reset Status', 'wpmudev-plugin-test' ); ?>
+								<?php esc_html_e( 'Reset Status', 'wpmudev-plugin-test' ); ?>
 							</button>
-							<button type="button" id="start-scan" class="button button-primary" <?php echo ( $status === 'running' ) ? 'disabled' : ''; ?>>
-								<?php _e( 'Start Scan', 'wpmudev-plugin-test' ); ?>
+							<button type="button" id="start-scan" class="button button-primary" <?php echo ( 'running' === $status ) ? 'disabled' : ''; ?>>
+								<?php esc_html_e( 'Start Scan', 'wpmudev-plugin-test' ); ?>
 							</button>
 							<button type="button" id="stop-scan" class="button button-secondary">
-								<?php _e( 'Stop Scan', 'wpmudev-plugin-test' ); ?>
+								<?php esc_html_e( 'Stop Scan', 'wpmudev-plugin-test' ); ?>
 							</button>
 						</div>
 					</div>

@@ -27,18 +27,18 @@ class Dependency_Checker {
 	 * @return bool True if all dependencies are available, false otherwise.
 	 */
 	public static function check_dependencies() {
-		// Basic WordPress compatibility check
+		// Basic WordPress compatibility check.
 		if ( ! function_exists( 'wp_get_current_user' ) ) {
 			return false;
 		}
 
-		// Check if Google API Client is available
+		// Check if Google API Client is available.
 		if ( ! class_exists( 'Google\\Client' ) ) {
 			add_action( 'admin_notices', array( __CLASS__, 'show_missing_dependency_notice' ) );
 			return false;
 		}
 
-		// Check if Firebase JWT is available
+		// Check if Firebase JWT is available.
 		if ( ! class_exists( 'Firebase\\JWT\\JWT' ) ) {
 			add_action( 'admin_notices', array( __CLASS__, 'show_missing_dependency_notice' ) );
 			return false;

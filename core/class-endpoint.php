@@ -20,6 +20,9 @@ use WP_REST_Controller;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
+/**
+ * Base endpoint class for REST API controllers.
+ */
 class Endpoint extends WP_REST_Controller {
 	/**
 	 * API endpoint version.
@@ -72,7 +75,7 @@ class Endpoint extends WP_REST_Controller {
 	public static function instance() {
 		static $instances = array();
 
-		// @codingStandardsIgnoreLine Plugin-backported
+		// @codingStandardsIgnoreLine Plugin-backported.
 		$called_class_name = get_called_class();
 
 		if ( ! isset( $instances[ $called_class_name ] ) ) {
@@ -155,6 +158,11 @@ class Endpoint extends WP_REST_Controller {
 		return $this->endpoint;
 	}
 
+	/**
+	 * Get the full endpoint URL.
+	 *
+	 * @return string The complete endpoint URL.
+	 */
 	public function get_endpoint_url() {
 		return trailingslashit( rest_url() ) . trailingslashit( $this->get_namespace() ) . $this->get_endpoint();
 	}

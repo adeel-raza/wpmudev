@@ -338,6 +338,7 @@ class Google_Drive extends Base {
 			'client_configured' => $client_configured,
 			'current_state'     => $current_state,
 			'redirect_uri'      => 'https://4b8375fd38b2.ngrok-free.app/wp-json/wpmudev/v1/drive/callback',
+			
 			'required_scopes'   => array(
 				'https://www.googleapis.com/auth/drive.file',
 				'https://www.googleapis.com/auth/drive.readonly',
@@ -480,9 +481,6 @@ class Google_Drive extends Base {
 			'uploadFileDescription'         => __( 'Choose a file to upload to your Google Drive. Maximum file size: 10MB.', 'wpmudev-plugin-test' ),
 			'folderNameTooLong'             => __( 'Folder name is too long (max 255 characters)', 'wpmudev-plugin-test' ),
 			'invalidFolderName'             => __( 'Folder name contains invalid characters', 'wpmudev-plugin-test' ),
-			'fileSelected'                  => __( 'Selected file:', 'wpmudev-plugin-test' ),
-			'uploading'                     => __( 'Uploading...', 'wpmudev-plugin-test' ),
-			'creating'                      => __( 'Creating...', 'wpmudev-plugin-test' ),
 		);
 	}
 

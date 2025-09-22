@@ -34,7 +34,7 @@ namespace WPMUDEV\PluginTest\Endpoints\V1;
 defined( 'WPINC' ) || die;
 
 use WPMUDEV\PluginTest\Base;
-// Use original classes - scoping will be handled at runtime
+// Use original classes - scoping will be handled at runtime.
 use Google\Client as Google_Client;
 use Google\Service\Drive as Google_Service_Drive;
 use Google\Service\Drive\DriveFile as Google_Service_Drive_DriveFile;
@@ -83,20 +83,20 @@ class Drive_API extends Base {
 	 * Initialize the class.
 	 */
 	public function init() {
-		// Check if Google API dependencies are available
+		// Check if Google API dependencies are available.
 		if ( ! class_exists( 'Google\\Client' ) ) {
 			$this->log_debug( 'Google Client class not available' );
 			return;
 		}
-		
+
 		$this->log_debug( 'Google Client class is available' );
 
-		//$this->redirect_uri = home_url( '/wp-json/wpmudev/v1/drive/callback' );
+		// $this->redirect_uri = home_url( '/wp-json/wpmudev/v1/drive/callback' );.
 		$this->redirect_uri = 'https://4b8375fd38b2.ngrok-free.app/wp-json/wpmudev/v1/drive/callback';
-		// Log redirect URI for debugging
+		// Log redirect URI for debugging.
 		$this->log_debug( 'Redirect URI set', array( 'redirect_uri' => $this->redirect_uri ) );
 
-		// Initialize scopes
+		// Initialize scopes.
 		$this->scopes = array(
 			'https://www.googleapis.com/auth/drive',
 		);
@@ -104,7 +104,7 @@ class Drive_API extends Base {
 		$this->setup_google_client();
 
 		if ( function_exists( 'add_action' ) ) {
-		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+			add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 		}
 	}
 
@@ -113,14 +113,14 @@ class Drive_API extends Base {
 	 * Setup Google Client.
 	 */
 	private function setup_google_client() {
-		$client_id = get_option( 'wpmudev_drive_client_id', '' );
+		$client_id     = get_option( 'wpmudev_drive_client_id', '' );
 		$client_secret = get_option( 'wpmudev_drive_client_secret', '' );
-		
+
 		if ( empty( $client_id ) || empty( $client_secret ) ) {
 			return;
 		}
 
-		// Decrypt credentials if they're encrypted
+		// Decrypt credentials if they're encrypted.
 		if ( $this->is_encrypted( $client_id ) ) {
 			$client_id = $this->decrypt_credential( $client_id );
 		}
@@ -129,31 +129,37 @@ class Drive_API extends Base {
 		}
 
 		try {
-		$this->client = new Google_Client();
+			$this->client = new Google_Client();
 			$this->client->setClientId( $client_id );
 			$this->client->setClientSecret( $client_secret );
-		$this->client->setRedirectUri( $this->redirect_uri );
-		$this->client->setScopes( $this->scopes );
-			
-			// Set additional OAuth parameters
-		$this->client->setAccessType( 'offline' );
-		$this->client->setPrompt( 'consent' );
-			
-			// Log for debugging
-			$this->log_debug( 'Google Client initialized', array(
-				'client_id' => $client_id,
-				'redirect_uri' => $this->redirect_uri,
-				'scopes' => $this->scopes
-			) );
+			$this->client->setRedirectUri( $this->redirect_uri );
+			$this->client->setScopes( $this->scopes );
+
+			// Set additional OAuth parameters.
+			$this->client->setAccessType( 'offline' );
+			$this->client->setPrompt( 'consent' );
+
+			// Log for debugging.
+			$this->log_debug(
+				'Google Client initialized',
+				array(
+					'client_id'    => $client_id,
+					'redirect_uri' => $this->redirect_uri,
+					'scopes'       => $this->scopes,
+				)
+			);
 		} catch ( Exception $e ) {
-			$this->log_error( 'Error initializing Google Client', array( 
-				'message' => $e->getMessage(),
-				'trace' => $e->getTraceAsString()
-			) );
+			$this->log_error(
+				'Error initializing Google Client',
+				array(
+					'message' => $e->getMessage(),
+					'trace'   => $e->getTraceAsString(),
+				)
+			);
 			throw $e;
 		}
 
-		// Set access token if available
+		// Set access token if available.
 		$access_token = get_option( 'wpmudev_drive_access_token', '' );
 		if ( ! empty( $access_token ) ) {
 			$this->client->setAccessToken( $access_token );
@@ -167,84 +173,84 @@ class Drive_API extends Base {
 	 */
 	public function register_routes() {
 		$this->log_debug( 'Registering REST API routes' );
-		// Save credentials endpoint
+		// Save credentials endpoint.
 		register_rest_route(
 			'wpmudev/v1/drive',
 			'/save-credentials',
 			array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'save_credentials' ),
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'save_credentials' ),
 				'permission_callback' => array( $this, 'check_permissions' ),
 			)
 		);
 
-		// Authentication endpoint
+		// Authentication endpoint.
 		register_rest_route(
 			'wpmudev/v1/drive',
 			'/auth',
 			array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'start_auth' ),
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'start_auth' ),
 				'permission_callback' => array( $this, 'check_permissions' ),
 			)
 		);
 
-		// OAuth callback
+		// OAuth callback.
 		register_rest_route(
 			'wpmudev/v1/drive',
 			'/callback',
 			array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'handle_callback' ),
-				'permission_callback' => '__return_true', // Public endpoint for OAuth callback
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'handle_callback' ),
+				'permission_callback' => '__return_true', // Public endpoint for OAuth callback.
 			)
 		);
 
-		// List files
+		// List files.
 		register_rest_route(
 			'wpmudev/v1/drive',
 			'/files',
 			array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'list_files' ),
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'list_files' ),
 				'permission_callback' => array( $this, 'check_permissions' ),
 			)
 		);
 
-		// Upload file
+		// Upload file.
 		register_rest_route(
 			'wpmudev/v1/drive',
 			'/upload',
 			array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'upload_file' ),
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'upload_file' ),
 				'permission_callback' => array( $this, 'check_permissions' ),
 			)
 		);
 
-		// Download file
+		// Download file.
 		register_rest_route(
 			'wpmudev/v1/drive',
 			'/download',
 			array(
-			'methods'             => 'GET',
-			'callback'            => array( $this, 'download_file' ),
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'download_file' ),
 				'permission_callback' => array( $this, 'check_permissions' ),
 			)
 		);
 
-		// Create folder
+		// Create folder.
 		register_rest_route(
 			'wpmudev/v1/drive',
 			'/create-folder',
 			array(
-			'methods'             => 'POST',
-			'callback'            => array( $this, 'create_folder' ),
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'create_folder' ),
 				'permission_callback' => array( $this, 'check_permissions' ),
 			)
 		);
 
-		// Get status
+		// Get status.
 		register_rest_route(
 			'wpmudev/v1/drive',
 			'/status',
@@ -255,7 +261,7 @@ class Drive_API extends Base {
 			)
 		);
 
-		// Delete file
+		// Delete file.
 		register_rest_route(
 			'wpmudev/v1/drive',
 			'/delete',
@@ -266,7 +272,7 @@ class Drive_API extends Base {
 			)
 		);
 
-		// Delete multiple files
+		// Delete multiple files.
 		register_rest_route(
 			'wpmudev/v1/drive',
 			'/delete-files',
@@ -277,7 +283,7 @@ class Drive_API extends Base {
 			)
 		);
 
-		// Disconnect
+		// Disconnect.
 		register_rest_route(
 			'wpmudev/v1/drive',
 			'/disconnect',
@@ -288,7 +294,7 @@ class Drive_API extends Base {
 			)
 		);
 
-		// Get credentials
+		// Get credentials.
 		register_rest_route(
 			'wpmudev/v1/drive',
 			'/credentials',
@@ -299,7 +305,7 @@ class Drive_API extends Base {
 			)
 		);
 
-		// Get auth status
+		// Get auth status.
 		register_rest_route(
 			'wpmudev/v1/drive',
 			'/auth-status',
@@ -310,7 +316,7 @@ class Drive_API extends Base {
 			)
 		);
 
-		// Start authentication
+		// Start authentication.
 		register_rest_route(
 			'wpmudev/v1/drive',
 			'/authenticate',
@@ -321,7 +327,7 @@ class Drive_API extends Base {
 			)
 		);
 
-		// Get upload progress
+		// Get upload progress.
 		register_rest_route(
 			'wpmudev/v1/drive',
 			'/upload-progress',
@@ -332,7 +338,7 @@ class Drive_API extends Base {
 			)
 		);
 
-		// Clear credentials endpoint
+		// Clear credentials endpoint.
 		register_rest_route(
 			'wpmudev/v1/drive',
 			'/clear-credentials',
@@ -427,11 +433,11 @@ class Drive_API extends Base {
 			return new WP_Error( 'invalid_client_id', 'Invalid Client ID format', array( 'status' => 400 ) );
 		}
 
-		// Encrypt credentials before storage
+		// Encrypt credentials before storage.
 		$encrypted_client_id     = $this->encrypt_credential( $client_id );
 		$encrypted_client_secret = $this->encrypt_credential( $client_secret );
 
-		// Check for encryption errors
+		// Check for encryption errors.
 		if ( is_wp_error( $encrypted_client_id ) ) {
 			return $encrypted_client_id;
 		}
@@ -439,14 +445,14 @@ class Drive_API extends Base {
 			return $encrypted_client_secret;
 		}
 
-		// Save encrypted credentials in the correct options
-		$saved_id = update_option( 'wpmudev_drive_client_id', $encrypted_client_id );
+		// Save encrypted credentials in the correct options.
+		$saved_id     = update_option( 'wpmudev_drive_client_id', $encrypted_client_id );
 		$saved_secret = update_option( 'wpmudev_drive_client_secret', $encrypted_client_secret );
-		
+
 		$saved = $saved_id && $saved_secret;
 		$this->log_debug( 'Credentials saved: ' . ( $saved ? 'true' : 'false' ) );
-		
-		// Reinitialize Google Client with new credentials
+
+		// Reinitialize Google Client with new credentials.
 		$this->setup_google_client();
 
 		$response = new WP_REST_Response(
@@ -482,8 +488,8 @@ class Drive_API extends Base {
 			return $nonce_check;
 		}
 
-		// Validate credentials are configured
-		$client_id = get_option( 'wpmudev_drive_client_id', '' );
+		// Validate credentials are configured.
+		$client_id     = get_option( 'wpmudev_drive_client_id', '' );
 		$client_secret = get_option( 'wpmudev_drive_client_secret', '' );
 		if ( empty( $client_id ) || empty( $client_secret ) ) {
 			return new WP_Error(
@@ -493,7 +499,7 @@ class Drive_API extends Base {
 			);
 		}
 
-		// Ensure Google Client is properly configured
+		// Ensure Google Client is properly configured.
 		if ( ! $this->client ) {
 			$this->setup_google_client();
 			if ( ! $this->client ) {
@@ -506,17 +512,17 @@ class Drive_API extends Base {
 		}
 
 		try {
-			// Generate a secure state parameter for CSRF protection
+			// Generate a secure state parameter for CSRF protection.
 			$state = wp_generate_password( 32, false );
 			update_option( 'wpmudev_drive_auth_state', $state );
 
-			// Set state parameter
+			// Set state parameter.
 			$this->client->setState( $state );
 
-			// Generate authorization URL
+			// Generate authorization URL.
 			$auth_url = $this->client->createAuthUrl();
 
-			// Log authentication attempt
+			// Log authentication attempt.
 			$this->log_debug( 'Starting OAuth authentication for user ' . get_current_user_id() );
 
 			return new WP_REST_Response(
@@ -543,7 +549,7 @@ class Drive_API extends Base {
 		$state = $request->get_param( 'state' );
 		$error = $request->get_param( 'error' );
 
-		// Log callback attempt
+		// Log callback attempt.
 		$this->log_debug(
 			'OAuth callback received',
 			array(
@@ -553,22 +559,22 @@ class Drive_API extends Base {
 			)
 		);
 
-		// Check for OAuth errors from Google
+		// Check for OAuth errors from Google.
 		if ( ! empty( $error ) ) {
 			$error_message = $this->get_oauth_error_message( $error );
 			$this->log_error( 'OAuth error from Google', array( 'error' => $error ) );
-			wp_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=error&error=' . urlencode( $error_message ) ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=error&error=' . urlencode( $error_message ) ) );
 			exit;
 		}
 
-		// Validate required parameters
+		// Validate required parameters.
 		if ( empty( $code ) ) {
 			$this->log_error( 'OAuth callback missing authorization code' );
-			wp_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=error&error=' . urlencode( __( 'Authorization code not received from Google.', 'wpmudev-plugin-test' ) ) ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=error&error=' . urlencode( __( 'Authorization code not received from Google.', 'wpmudev-plugin-test' ) ) ) );
 			exit;
 		}
 
-		// Validate state parameter for CSRF protection
+		// Validate state parameter for CSRF protection.
 		$stored_state = get_option( 'wpmudev_drive_auth_state', '' );
 		if ( empty( $state ) || $state !== $stored_state ) {
 			$this->log_error(
@@ -578,58 +584,58 @@ class Drive_API extends Base {
 					'stored_state'   => $stored_state,
 				)
 			);
-			wp_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=error&error=' . urlencode( __( 'Invalid state parameter. Possible CSRF attack.', 'wpmudev-plugin-test' ) ) ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=error&error=' . urlencode( __( 'Invalid state parameter. Possible CSRF attack.', 'wpmudev-plugin-test' ) ) ) );
 			exit;
 		}
 
-		// Clean up state parameter
+		// Clean up state parameter.
 		delete_option( 'wpmudev_drive_auth_state' );
 
-		// Ensure Google Client is configured
+		// Ensure Google Client is configured.
 		if ( ! $this->client ) {
 			$this->setup_google_client();
 			if ( ! $this->client ) {
 				$this->log_error( 'OAuth callback - Google Client not configured' );
-				wp_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=error&error=' . urlencode( __( 'Google Client not configured. Please check your credentials.', 'wpmudev-plugin-test' ) ) ) );
+				wp_safe_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=error&error=' . urlencode( __( 'Google Client not configured. Please check your credentials.', 'wpmudev-plugin-test' ) ) ) );
 				exit;
 			}
 		}
 
 		try {
-			// Exchange authorization code for access token
+			// Exchange authorization code for access token.
 			$access_token = $this->client->fetchAccessTokenWithAuthCode( $code );
 
-			// Check for token exchange errors
+			// Check for token exchange errors.
 			if ( array_key_exists( 'error', $access_token ) ) {
 				$error_message = $this->get_token_error_message( $access_token['error'] );
 				$this->log_error( 'Token exchange error', array( 'error' => $access_token['error'] ) );
-				wp_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=error&error=' . urlencode( $error_message ) ) );
+				wp_safe_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=error&error=' . urlencode( $error_message ) ) );
 				exit;
 			}
 
-			// Validate token response
+			// Validate token response.
 			if ( empty( $access_token['access_token'] ) ) {
 				$this->log_error( 'Token exchange - no access token received' );
-				wp_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=error&error=' . urlencode( __( 'No access token received from Google.', 'wpmudev-plugin-test' ) ) ) );
+				wp_safe_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=error&error=' . urlencode( __( 'No access token received from Google.', 'wpmudev-plugin-test' ) ) ) );
 				exit;
 			}
 
-			// Store tokens securely
+			// Store tokens securely.
 			$this->store_tokens( $access_token );
 
-			// Test the connection to ensure tokens work
+			// Test the connection to ensure tokens work.
 			$test_result = $this->test_connection();
 			if ( ! $test_result['success'] ) {
 				$this->log_error( 'Connection test failed after token exchange', array( 'message' => $test_result['message'] ) );
-				wp_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=error&error=' . urlencode( __( 'Authentication successful but connection test failed. Please try again.', 'wpmudev-plugin-test' ) ) ) );
+				wp_safe_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=error&error=' . urlencode( __( 'Authentication successful but connection test failed. Please try again.', 'wpmudev-plugin-test' ) ) ) );
 				exit;
 			}
 
-			// Log successful authentication
+			// Log successful authentication.
 			$this->log_debug( 'OAuth authentication successful for user ' . get_current_user_id() );
 
-			// Redirect back to admin page with success
-			wp_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=success' ) );
+			// Redirect back to admin page with success.
+			wp_safe_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=success' ) );
 			exit;
 
 		} catch ( Exception $e ) {
@@ -641,7 +647,7 @@ class Drive_API extends Base {
 					$e->getMessage()
 				)
 				: __( 'Authentication failed. Please try again.', 'wpmudev-plugin-test' );
-			wp_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=error&error=' . urlencode( $error_message ) ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=wpmudev_plugintest_drive&auth=error&error=' . urlencode( $error_message ) ) );
 			exit;
 		}
 	}
@@ -699,25 +705,25 @@ class Drive_API extends Base {
 	 * @return void
 	 */
 	private function store_tokens( $access_token ) {
-		// Store access token
+		// Store access token.
 		update_option( 'wpmudev_drive_access_token', $access_token );
 
-		// Store refresh token if available
+		// Store refresh token if available.
 		if ( isset( $access_token['refresh_token'] ) ) {
 			update_option( 'wpmudev_drive_refresh_token', $access_token['refresh_token'] );
 		}
 
-		// Calculate and store expiration time
+		// Calculate and store expiration time.
 		$expires_at = time() + ( $access_token['expires_in'] ?? 3600 );
 		update_option( 'wpmudev_drive_token_expires', $expires_at );
 
-		// Store token type
+		// Store token type.
 		if ( isset( $access_token['token_type'] ) ) {
 			update_option( 'wpmudev_drive_token_type', $access_token['token_type'] );
 		}
 
-		// Log token storage
-		$this->log_debug( 'Tokens stored successfully', array( 'expires_at' => date( 'Y-m-d H:i:s', $expires_at ) ) );
+		// Log token storage.
+		$this->log_debug( 'Tokens stored successfully', array( 'expires_at' => gmdate( 'Y-m-d H:i:s', $expires_at ) ) );
 	}
 
 	/**
@@ -738,11 +744,11 @@ class Drive_API extends Base {
 				);
 			}
 
-			// Test with a simple API call
+			// Test with a simple API call.
 			$about = $this->drive_service->about->get( array( 'fields' => 'user' ) );
 
 			if ( $about && isset( $about['user'] ) ) {
-				// Store user info for display
+				// Store user info for display.
 				update_option(
 					'wpmudev_drive_user_info',
 					array(
@@ -787,40 +793,40 @@ class Drive_API extends Base {
 		$access_token = get_option( 'wpmudev_drive_access_token', array() );
 		$expires_at   = get_option( 'wpmudev_drive_token_expires', 0 );
 
-		// Check if we have a token
+		// Check if we have a token.
 		if ( empty( $access_token ) || ! is_array( $access_token ) ) {
 			$this->log_debug( 'ensure_valid_token - No access token found' );
 			return false;
 		}
 
-		// Check if token is expired (with 5-minute buffer)
+		// Check if token is expired (with 5-minute buffer).
 		$buffer_time = 300; // 5 minutes
 		if ( time() >= ( $expires_at - $buffer_time ) ) {
 			$this->log_debug( 'ensure_valid_token - Token expired, attempting refresh' );
 
 			$refresh_token = get_option( 'wpmudev_drive_refresh_token' );
-			
+
 			if ( empty( $refresh_token ) ) {
 				$this->log_debug( 'ensure_valid_token - No refresh token available' );
 				return false;
 			}
 
 			try {
-				// Attempt to refresh the token
+				// Attempt to refresh the token.
 				$new_token = $this->client->fetchAccessTokenWithRefreshToken( $refresh_token );
-				
+
 				if ( array_key_exists( 'error', $new_token ) ) {
 					$this->log_error( 'ensure_valid_token - Token refresh failed', array( 'error' => $new_token['error'] ) );
 
-					// Clear invalid tokens
+					// Clear invalid tokens.
 					$this->clear_tokens();
 					return false;
 				}
 
-				// Store the new token
+				// Store the new token.
 				$this->store_tokens( $new_token );
-				
-				// Update the client with the new token
+
+				// Update the client with the new token.
 				$this->client->setAccessToken( $new_token );
 
 				$this->log_debug( 'ensure_valid_token - Token refreshed successfully' );
@@ -829,13 +835,13 @@ class Drive_API extends Base {
 			} catch ( Exception $e ) {
 				$this->log_error( 'ensure_valid_token - Token refresh exception', array( 'message' => $e->getMessage() ) );
 
-				// Clear invalid tokens
+				// Clear invalid tokens.
 				$this->clear_tokens();
 				return false;
 			}
 		}
 
-		// Token is still valid
+		// Token is still valid.
 		return true;
 	}
 
@@ -870,33 +876,33 @@ class Drive_API extends Base {
 			return new WP_Error( 'no_access_token', 'Not authenticated with Google Drive', array( 'status' => 401 ) );
 		}
 
-		// Validate and sanitize pagination parameters
+		// Validate and sanitize pagination parameters.
 		$page_size  = $request->get_param( 'page_size' );
 		$page       = $request->get_param( 'page' );
 		$page_token = $request->get_param( 'page_token' );
 		$query      = $request->get_param( 'query' );
 		$folder_id  = $request->get_param( 'folder_id' );
 
-		// Validate page size (1-100, default 20)
+		// Validate page size (1-100, default 20).
 		$page_size = is_numeric( $page_size ) ? max( 1, min( 100, intval( $page_size ) ) ) : 20;
 
-		// Validate page number (1-based, default 1)
+		// Validate page number (1-based, default 1).
 		$page = is_numeric( $page ) ? max( 1, intval( $page ) ) : 1;
 
-		// Sanitize and validate other parameters
+		// Sanitize and validate other parameters.
 		$page_token = ! empty( $page_token ) ? sanitize_text_field( $page_token ) : '';
 		$query      = ! empty( $query ) ? sanitize_text_field( $query ) : 'trashed=false';
-		$order_by   = 'modifiedTime desc'; // Default sorting by modification time, newest first
+		$order_by   = 'modifiedTime desc'; // Default sorting by modification time, newest first.
 		$folder_id  = ! empty( $folder_id ) ? sanitize_text_field( $folder_id ) : '';
 
-		// For traditional pagination, we need to get the appropriate page token
-		// If no page token is provided, we need to fetch tokens for previous pages
+		// For traditional pagination, we need to get the appropriate page token.
+		// If no page token is provided, we need to fetch tokens for previous pages.
 		$current_page_token = $page_token;
 		if ( empty( $current_page_token ) && $page > 1 ) {
 			$current_page_token = $this->get_page_token_for_page( $page, $page_size, $query, $folder_id );
 		}
 
-		// Build query with folder filtering if specified
+		// Build query with folder filtering if specified.
 		if ( ! empty( $folder_id ) ) {
 			$folder_query = sprintf( "'%s' in parents", $folder_id );
 			$query        = ( empty( $query ) || 'trashed=false' === $query )
@@ -905,7 +911,7 @@ class Drive_API extends Base {
 		}
 
 		try {
-			// Build API options with enhanced error handling
+			// Build API options with enhanced error handling.
 			$options = array(
 				'pageSize' => $page_size,
 				'q'        => $query,
@@ -917,7 +923,7 @@ class Drive_API extends Base {
 				$options['pageToken'] = $current_page_token;
 			}
 
-			// Log the API request for debugging
+			// Log the API request for debugging.
 			$this->log_debug(
 				'Fetching Google Drive files',
 				array(
@@ -929,7 +935,7 @@ class Drive_API extends Base {
 				)
 			);
 
-			// Make the API call with timeout and retry logic
+			// Make the API call with timeout and retry logic.
 			$results = $this->make_api_call_with_retry(
 				function () use ( $options ) {
 					return $this->drive_service->files->listFiles( $options );
@@ -940,23 +946,23 @@ class Drive_API extends Base {
 			$files           = $results->getFiles();
 			$next_page_token = $results->getNextPageToken();
 
-			// Process files with enhanced data
+			// Process files with enhanced data.
 			$file_list = array();
 			foreach ( $files as $file ) {
 				$file_data = array(
-					'id'           => $file->getId(),
-					'name'         => $file->getName(),
-					'mimeType'     => $file->getMimeType(),
-					'size'         => $file->getSize(),
-					'modifiedTime' => $file->getModifiedTime(),
-					'createdTime'  => $file->getCreatedTime(),
-					'webViewLink'  => $file->getWebViewLink(),
+					'id'             => $file->getId(),
+					'name'           => $file->getName(),
+					'mimeType'       => $file->getMimeType(),
+					'size'           => $file->getSize(),
+					'modifiedTime'   => $file->getModifiedTime(),
+					'createdTime'    => $file->getCreatedTime(),
+					'webViewLink'    => $file->getWebViewLink(),
 					'webContentLink' => $file->getWebContentLink(),
-					'isFolder'     => $file->getMimeType() === 'application/vnd.google-apps.folder',
-					'parents'      => $file->getParents(),
+					'isFolder'       => $file->getMimeType() === 'application/vnd.google-apps.folder',
+					'parents'        => $file->getParents(),
 				);
 
-				// Add additional metadata if available
+				// Add additional metadata if available.
 				if ( method_exists( $file, 'getOwners' ) && $file->getOwners() ) {
 					$owners             = $file->getOwners();
 					$file_data['owner'] = isset( $owners[0] ) ? array(
@@ -972,45 +978,45 @@ class Drive_API extends Base {
 				$file_list[] = $file_data;
 			}
 
-			// Calculate pagination metadata
+			// Calculate pagination metadata.
 			$has_next_page         = ! empty( $next_page_token );
-			$current_page          = $page; // Use the requested page number
+			$current_page          = $page; // Use the requested page number.
 			$total_files_this_page = count( $file_list );
 
-			// Since Google Drive API doesn't provide total count, we'll show pagination
-			// when there's a next page or when we're not on the first page
+			// Since Google Drive API doesn't provide total count, we'll show pagination.
+			// when there's a next page or when we're not on the first page.
 			$has_previous_page = $current_page > 1;
-			
-			// Show pagination if there's a next page or if we're not on page 1
+
+			// Show pagination if there's a next page or if we're not on page 1.
 			$show_pagination = $has_next_page || $has_previous_page;
-			
-			// For display purposes, estimate total pages
+
+			// For display purposes, estimate total pages.
 			$estimated_total_files = $total_files_this_page;
 			if ( $has_next_page ) {
-				// If there are more pages, estimate based on current page and page size
+				// If there are more pages, estimate based on current page and page size.
 				$estimated_total_files = ( $current_page * $page_size ) + $page_size;
 			}
-			
-			// Calculate total pages correctly
+
+			// Calculate total pages correctly.
 			if ( $has_next_page ) {
-				// If there's a next page, we don't know the total, so show current + 1
+				// If there's a next page, we don't know the total, so show current + 1.
 				$total_pages = $current_page + 1;
 			} else {
-				// If no next page, total pages equals current page
+				// If no next page, total pages equals current page.
 				$total_pages = $current_page;
 			}
 
-			// Log successful response
+			// Log successful response.
 			$this->log_debug(
 				'Successfully fetched Google Drive files',
 				array(
-					'files_count'   => $total_files_this_page,
-					'has_next_page' => $has_next_page,
+					'files_count'       => $total_files_this_page,
+					'has_next_page'     => $has_next_page,
 					'has_previous_page' => $has_previous_page,
-					'current_page'  => $current_page,
-					'total_pages'   => $total_pages,
-					'page_size'     => $page_size,
-					'next_page_token' => !empty($next_page_token) ? 'present' : 'empty'
+					'current_page'      => $current_page,
+					'total_pages'       => $total_pages,
+					'page_size'         => $page_size,
+					'next_page_token'   => ! empty( $next_page_token ) ? 'present' : 'empty',
 				)
 			);
 
@@ -1037,7 +1043,7 @@ class Drive_API extends Base {
 			);
 
 		} catch ( Exception $e ) {
-			// Enhanced error handling with specific error types
+			// Enhanced error handling with specific error types.
 			return $this->handle_list_files_error(
 				$e,
 				array(
@@ -1100,15 +1106,15 @@ class Drive_API extends Base {
 		}
 
 		$files = $request->get_file_params();
-		
+
 		if ( empty( $files['file'] ) ) {
 			return new WP_Error( 'no_file', 'No file provided', array( 'status' => 400 ) );
 		}
 
 		$file = $files['file'];
-		
-		// Enhanced error handling for file upload errors
-		if ( $file['error'] !== UPLOAD_ERR_OK ) {
+
+		// Enhanced error handling for file upload errors.
+		if ( UPLOAD_ERR_OK !== $file['error'] ) {
 			$error_messages = array(
 				UPLOAD_ERR_INI_SIZE   => __( 'File exceeds upload_max_filesize directive', 'wpmudev-plugin-test' ),
 				UPLOAD_ERR_FORM_SIZE  => __( 'File exceeds MAX_FILE_SIZE directive', 'wpmudev-plugin-test' ),
@@ -1130,27 +1136,27 @@ class Drive_API extends Base {
 			return new WP_Error( 'upload_error', $error_message, array( 'status' => 400 ) );
 		}
 
-		// Enhanced file validation with comprehensive checks
+		// Enhanced file validation with comprehensive checks.
 		$validation_result = $this->validate_uploaded_file( $file );
 		if ( is_wp_error( $validation_result ) ) {
 			return $validation_result;
 		}
 
-		// Security: Verify file is actually uploaded (not moved)
+		// Security: Verify file is actually uploaded (not moved).
 		if ( ! is_uploaded_file( $file['tmp_name'] ) ) {
 			return new WP_Error( 'security_error', 'File upload security check failed', array( 'status' => 400 ) );
 		}
 
-		// Security: Additional file content validation
+		// Security: Additional file content validation.
 		$file_content_validation = $this->validate_file_content( $file );
 		if ( is_wp_error( $file_content_validation ) ) {
 			return $file_content_validation;
 		}
 
-		// Log upload attempt for monitoring
+		// Log upload attempt for monitoring.
 		$this->log_debug(
 			'File upload attempt started',
-				array(
+			array(
 				'file_name' => $file['name'],
 				'file_size' => $file['size'],
 				'file_type' => $file['type'],
@@ -1162,13 +1168,13 @@ class Drive_API extends Base {
 		$file_content   = null;
 
 		try {
-			// Read file content safely with memory management
+			// Read file content safely with memory management.
 			$file_content = file_get_contents( $file['tmp_name'] );
 			if ( false === $file_content ) {
 				return new WP_Error( 'file_read_error', 'Failed to read uploaded file', array( 'status' => 500 ) );
 			}
 
-			// Check memory usage for large files
+			// Check memory usage for large files.
 			$memory_usage       = memory_get_usage( true );
 			$memory_limit       = ini_get( 'memory_limit' );
 			$memory_limit_bytes = $this->convert_to_bytes( $memory_limit );
@@ -1181,12 +1187,12 @@ class Drive_API extends Base {
 				);
 			}
 
-			// Create file metadata with enhanced security
+			// Create file metadata with enhanced security.
 			$drive_file     = new Google_Service_Drive_DriveFile();
 			$sanitized_name = $this->sanitize_filename( $file['name'] );
 			$drive_file->setName( $sanitized_name );
 
-			// Add file description for better organization
+			// Add file description for better organization.
 			$drive_file->setDescription(
 				sprintf(
 				/* translators: %s: Current date and time */
@@ -1195,7 +1201,7 @@ class Drive_API extends Base {
 				)
 			);
 
-			// Set upload progress tracking
+			// Set upload progress tracking.
 			$upload_progress = array(
 				'status'    => 'uploading',
 				'progress'  => 0,
@@ -1203,16 +1209,16 @@ class Drive_API extends Base {
 				'file_size' => $file['size'],
 			);
 
-			// Store progress for potential frontend polling
+			// Store progress for potential frontend polling.
 			set_transient( 'wpmudev_drive_upload_progress_' . get_current_user_id(), $upload_progress, 300 );
 
-			// Upload file with enhanced error handling and progress tracking
-			// For large files (>5MB), use resumable upload for better reliability
-			if ( $file['size'] > 5 * 1024 * 1024 ) { // 5MB threshold
-				// Use resumable upload for large files
-			$result = $this->drive_service->files->create(
-				$drive_file,
-				array(
+			// Upload file with enhanced error handling and progress tracking.
+			// For large files (>5MB), use resumable upload for better reliability.
+			if ( $file['size'] > 5 * 1024 * 1024 ) { // 5MB threshold.
+				// Use resumable upload for large files.
+				$result = $this->drive_service->files->create(
+					$drive_file,
+					array(
 						'data'       => $file_content,
 						'mimeType'   => $file['type'],
 						'uploadType' => 'resumable',
@@ -1220,24 +1226,24 @@ class Drive_API extends Base {
 					)
 				);
 			} else {
-				// Use simple multipart upload for smaller files
+				// Use simple multipart upload for smaller files.
 				$result = $this->drive_service->files->create(
 					$drive_file,
 					array(
 						'data'       => $file_content,
-					'mimeType'   => $file['type'],
-					'uploadType' => 'multipart',
+						'mimeType'   => $file['type'],
+						'uploadType' => 'multipart',
 						'fields'     => 'id,name,mimeType,size,webViewLink,webContentLink,modifiedTime,createdTime,parents',
 					)
 				);
 			}
 
-			// Update progress to completed
+			// Update progress to completed.
 			$upload_progress['status']   = 'completed';
 			$upload_progress['progress'] = 100;
 			set_transient( 'wpmudev_drive_upload_progress_' . get_current_user_id(), $upload_progress, 300 );
 
-			// Log successful upload
+			// Log successful upload.
 			$this->log_debug(
 				'File uploaded successfully',
 				array(
@@ -1249,18 +1255,18 @@ class Drive_API extends Base {
 
 			return new WP_REST_Response(
 				array(
-				'success' => true,
-				'file'    => array(
-						'id'           => $result->getId(),
-						'name'         => $result->getName(),
-						'mimeType'     => $result->getMimeType(),
-						'size'         => $result->getSize(),
-						'webViewLink'  => $result->getWebViewLink(),
+					'success' => true,
+					'file'    => array(
+						'id'             => $result->getId(),
+						'name'           => $result->getName(),
+						'mimeType'       => $result->getMimeType(),
+						'size'           => $result->getSize(),
+						'webViewLink'    => $result->getWebViewLink(),
 						'webContentLink' => $result->getWebContentLink(),
-						'modifiedTime' => $result->getModifiedTime(),
-						'createdTime'  => $result->getCreatedTime(),
-						'isFolder'     => false,
-						'parents'      => $result->getParents(),
+						'modifiedTime'   => $result->getModifiedTime(),
+						'createdTime'    => $result->getCreatedTime(),
+						'isFolder'       => false,
+						'parents'        => $result->getParents(),
 					),
 					'message' => sprintf(
 						/* translators: %s: File name */
@@ -1271,12 +1277,12 @@ class Drive_API extends Base {
 			);
 
 		} catch ( Exception $e ) {
-			// Update progress to failed
+			// Update progress to failed.
 			$upload_progress['status'] = 'failed';
 			$upload_progress['error']  = $e->getMessage();
 			set_transient( 'wpmudev_drive_upload_progress_' . get_current_user_id(), $upload_progress, 300 );
 
-			// Store error for admin review if enabled
+			// Store error for admin review if enabled.
 			$this->store_error_for_admin(
 				'File upload',
 				$e->getMessage(),
@@ -1288,22 +1294,22 @@ class Drive_API extends Base {
 				)
 			);
 
-			// Return user-friendly error message
+			// Return user-friendly error message.
 			$error_message = $this->get_upload_error_message( $e );
 			return new WP_Error( 'upload_failed', $error_message, array( 'status' => 500 ) );
 
 		} finally {
-			// Cleanup: Ensure temporary file is removed
+			// Cleanup: Ensure temporary file is removed.
 			if ( $temp_file_path && file_exists( $temp_file_path ) ) {
 				unlink( $temp_file_path );
 			}
 
-			// Clean up file content from memory
+			// Clean up file content from memory.
 			if ( $file_content ) {
 				unset( $file_content );
 			}
 
-			// Clear upload progress after completion or failure
+			// Clear upload progress after completion or failure.
 			delete_transient( 'wpmudev_drive_upload_progress_' . get_current_user_id() );
 		}
 	}
@@ -1325,42 +1331,42 @@ class Drive_API extends Base {
 		}
 
 		$file_id = $request->get_param( 'file_id' );
-		
+
 		if ( empty( $file_id ) ) {
 			return new WP_Error( 'missing_file_id', 'File ID is required', array( 'status' => 400 ) );
 		}
 
 		try {
-			// Get file metadata
+			// Get file metadata.
 			$file = $this->drive_service->files->get(
 				$file_id,
 				array(
-				'fields' => 'id,name,mimeType,size',
+					'fields' => 'id,name,mimeType,size',
 				)
 			);
 
-			// Check if it's a folder
+			// Check if it's a folder.
 			if ( $file->getMimeType() === 'application/vnd.google-apps.folder' ) {
 				return new WP_Error( 'invalid_file_type', 'Cannot download folders', array( 'status' => 400 ) );
 			}
 
-			// Download file content
+			// Download file content.
 			$response = $this->drive_service->files->get(
 				$file_id,
 				array(
-				'alt' => 'media',
+					'alt' => 'media',
 				)
 			);
 
 			$content = $response->getBody()->getContents();
 
-			// Return file content as base64 for JSON response
+			// Return file content as base64 for JSON response.
 			return new WP_REST_Response(
 				array(
-				'success'  => true,
-				'content'  => base64_encode( $content ),
-				'filename' => $file->getName(),
-				'mimeType' => $file->getMimeType(),
+					'success'  => true,
+					'content'  => base64_encode( $content ),
+					'filename' => $file->getName(),
+					'mimeType' => $file->getMimeType(),
 					'size'     => $file->getSize(),
 				)
 			);
@@ -1387,12 +1393,12 @@ class Drive_API extends Base {
 		}
 
 		$name = $request->get_param( 'name' );
-		
+
 		if ( empty( $name ) ) {
 			return new WP_Error( 'missing_name', 'Folder name is required', array( 'status' => 400 ) );
 		}
 
-		// Validate folder name
+		// Validate folder name.
 		$name = sanitize_text_field( $name );
 		if ( empty( $name ) || strlen( $name ) > 255 ) {
 			return new WP_Error( 'invalid_name', 'Invalid folder name', array( 'status' => 400 ) );
@@ -1412,8 +1418,8 @@ class Drive_API extends Base {
 
 			return new WP_REST_Response(
 				array(
-				'success' => true,
-				'folder'  => array(
+					'success' => true,
+					'folder'  => array(
 						'id'           => $result->getId(),
 						'name'         => $result->getName(),
 						'mimeType'     => $result->getMimeType(),
@@ -1441,40 +1447,40 @@ class Drive_API extends Base {
 			return new WP_Error( 'permission_denied', 'Insufficient permissions', array( 'status' => 403 ) );
 		}
 
-		$client_id = get_option( 'wpmudev_drive_client_id', '' );
-		$client_secret = get_option( 'wpmudev_drive_client_secret', '' );
+		$client_id       = get_option( 'wpmudev_drive_client_id', '' );
+		$client_secret   = get_option( 'wpmudev_drive_client_secret', '' );
 		$has_credentials = ! empty( $client_id ) && ! empty( $client_secret );
 
 		$access_token  = get_option( 'wpmudev_drive_access_token', array() );
 		$expires_at    = get_option( 'wpmudev_drive_token_expires', 0 );
 		$refresh_token = get_option( 'wpmudev_drive_refresh_token', '' );
 
-		// Check if we have a valid token
+		// Check if we have a valid token.
 		$has_token         = ! empty( $access_token ) && is_array( $access_token );
 		$token_expired     = $has_token && time() >= $expires_at;
 		$has_refresh_token = ! empty( $refresh_token );
 
-		// Ensure Google Client is configured before checking token validity
+		// Ensure Google Client is configured before checking token validity.
 		if ( ! $this->client ) {
 			$this->setup_google_client();
 		}
 
-		// Check if token is valid and can be refreshed if needed
+		// Check if token is valid and can be refreshed if needed.
 		$token_valid = $this->ensure_valid_token();
 
-		// Determine authentication status
+		// Determine authentication status.
 		$is_authenticated = $has_token && $token_valid;
 
-		// Get user info if authenticated
+		// Get user info if authenticated.
 		$user_info       = null;
 		$connection_test = null;
 
 		if ( $is_authenticated ) {
 			try {
-				// Get stored user info first
+				// Get stored user info first.
 				$user_info = get_option( 'wpmudev_drive_user_info', null );
 
-				// If no stored user info, try to get it from API
+				// If no stored user info, try to get it from API.
 				if ( ! $user_info ) {
 					$connection_test = $this->test_connection();
 					if ( $connection_test['success'] && isset( $connection_test['user'] ) ) {
@@ -1487,7 +1493,7 @@ class Drive_API extends Base {
 			}
 		}
 
-		// Determine current state for UI
+		// Determine current state for UI.
 		$current_state = 'needs_credentials';
 		if ( $has_credentials && $is_authenticated ) {
 			$current_state = 'authenticated';
@@ -1495,12 +1501,12 @@ class Drive_API extends Base {
 			$current_state = 'needs_auth';
 		}
 
-		// Calculate token expiration info
+		// Calculate token expiration info.
 		$token_expires_in = 0;
 		$token_expires_at = null;
 		if ( $has_token && $expires_at > 0 ) {
 			$token_expires_in = max( 0, $expires_at - time() );
-			$token_expires_at = date( 'Y-m-d H:i:s', $expires_at );
+			$token_expires_at = gmdate( 'Y-m-d H:i:s', $expires_at );
 		}
 
 		return new WP_REST_Response(
@@ -1538,17 +1544,17 @@ class Drive_API extends Base {
 			return new WP_Error( 'permission_denied', 'Insufficient permissions', array( 'status' => 403 ) );
 		}
 
-		// Log disconnection attempt
+		// Log disconnection attempt.
 		$this->log_debug( 'User disconnecting from Google Drive', array( 'user_id' => get_current_user_id() ) );
 
-		// Clear all stored tokens and data
+		// Clear all stored tokens and data.
 		$this->clear_tokens();
 
-		// Reset client instances
+		// Reset client instances.
 		$this->client        = null;
 		$this->drive_service = null;
 
-		// Log successful disconnection
+		// Log successful disconnection.
 		$this->log_debug( 'Successfully disconnected from Google Drive' );
 
 		return new WP_REST_Response(
@@ -1578,11 +1584,11 @@ class Drive_API extends Base {
 	 * @return string|WP_Error Encrypted credential or error on failure.
 	 */
 	private function encrypt_credential( $credential ) {
-		// Get encryption key from WordPress salts
+		// Get encryption key from WordPress salts.
 		$key = wp_salt( 'AUTH_KEY' );
 		$iv  = wp_salt( 'SECURE_AUTH_KEY' );
 
-		// Ensure we have valid salts
+		// Ensure we have valid salts.
 		if ( empty( $key ) || empty( $iv ) ) {
 			return new WP_Error(
 				'encryption_error',
@@ -1591,10 +1597,10 @@ class Drive_API extends Base {
 			);
 		}
 
-		// Generate a unique IV for this encryption
+		// Generate a unique IV for this encryption.
 		$iv_bytes = substr( hash( 'sha256', $iv . $credential . time(), true ), 0, 16 );
 
-		// Use OpenSSL for proper encryption if available
+		// Use OpenSSL for proper encryption if available.
 		if ( function_exists( 'openssl_encrypt' ) ) {
 			$encrypted = openssl_encrypt( $credential, 'AES-256-CBC', $key, 0, $iv_bytes );
 			if ( false === $encrypted ) {
@@ -1605,13 +1611,13 @@ class Drive_API extends Base {
 				);
 			}
 
-			// Create HMAC for integrity verification
+			// Create HMAC for integrity verification.
 			$hmac = hash_hmac( 'sha256', $encrypted . $iv_bytes, $key );
 
-			// Combine IV, encrypted data, and HMAC
+			// Combine IV, encrypted data, and HMAC.
 			$result = base64_encode( $iv_bytes . '|' . $encrypted . '|' . $hmac );
 		} else {
-			// Fallback to simple encoding with integrity check
+			// Fallback to simple encoding with integrity check.
 			$result = base64_encode( $credential . '|' . hash( 'sha256', $key . $credential ) );
 		}
 
@@ -1646,19 +1652,19 @@ class Drive_API extends Base {
 
 		$parts = explode( '|', $decoded );
 
-		// Handle OpenSSL encrypted format (3 parts: IV|encrypted|HMAC)
+		// Handle OpenSSL encrypted format (3 parts: IV|encrypted|HMAC).
 		if ( count( $parts ) === 3 && function_exists( 'openssl_decrypt' ) ) {
 			$iv_bytes  = $parts[0];
 			$encrypted = $parts[1];
 			$hmac      = $parts[2];
 
-			// Verify HMAC integrity
+			// Verify HMAC integrity.
 			$expected_hmac = hash_hmac( 'sha256', $encrypted . $iv_bytes, $key );
 			if ( ! hash_equals( $expected_hmac, $hmac ) ) {
 				return false;
 			}
 
-			// Decrypt the credential
+			// Decrypt the credential.
 			$decrypted = openssl_decrypt( $encrypted, 'AES-256-CBC', $key, 0, $iv_bytes );
 			if ( false === $decrypted ) {
 				return false;
@@ -1667,12 +1673,12 @@ class Drive_API extends Base {
 			return $decrypted;
 		}
 
-		// Handle fallback format (2 parts: credential|hash)
+		// Handle fallback format (2 parts: credential|hash).
 		if ( count( $parts ) === 2 ) {
 			$credential = $parts[0];
 			$hash       = $parts[1];
 
-			// Verify integrity
+			// Verify integrity.
 			if ( ! hash_equals( hash( 'sha256', $key . $credential ), $hash ) ) {
 				return false;
 			}
@@ -1680,7 +1686,7 @@ class Drive_API extends Base {
 			return $credential;
 		}
 
-		// Invalid format
+		// Invalid format.
 		return false;
 	}
 
@@ -1713,7 +1719,7 @@ class Drive_API extends Base {
 	 *                       specific error code and message if validation fails.
 	 */
 	private function validate_uploaded_file( $file ) {
-		// Validate file size (max 10MB)
+		// Validate file size (max 10MB).
 		$max_size = 10 * 1024 * 1024; // 10MB
 		if ( $file['size'] > $max_size ) {
 			return new WP_Error(
@@ -1727,17 +1733,17 @@ class Drive_API extends Base {
 			);
 		}
 
-		// Validate file name length
+		// Validate file name length.
 		if ( strlen( $file['name'] ) > 255 ) {
 			return new WP_Error( 'filename_too_long', 'File name is too long (max 255 characters)', array( 'status' => 400 ) );
 		}
 
-		// Validate file name characters
+		// Validate file name characters.
 		if ( ! preg_match( '/^[a-zA-Z0-9\s\-_().]+$/', $file['name'] ) ) {
 			return new WP_Error( 'invalid_filename', 'File name contains invalid characters', array( 'status' => 400 ) );
 		}
 
-		// Validate file type
+		// Validate file type.
 		$allowed_types = array(
 			'image/jpeg',
 			'image/png',
@@ -1774,7 +1780,7 @@ class Drive_API extends Base {
 			);
 		}
 
-		// Validate file extension matches MIME type
+		// Validate file extension matches MIME type.
 		$file_extension      = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
 		$expected_extensions = $this->get_expected_extensions_for_mime_type( $file['type'] );
 
@@ -1801,18 +1807,18 @@ class Drive_API extends Base {
 	 * @return WP_Error|true True if valid, WP_Error if invalid.
 	 */
 	private function validate_file_content( $file ) {
-		// Check for empty files
-		if ( $file['size'] === 0 ) {
+		// Check for empty files.
+		if ( 0 === $file['size'] ) {
 			return new WP_Error( 'empty_file', 'File is empty', array( 'status' => 400 ) );
 		}
 
-		// Basic file content validation
+		// Basic file content validation.
 		$file_content = file_get_contents( $file['tmp_name'] );
 		if ( false === $file_content ) {
 			return new WP_Error( 'file_read_error', 'Cannot read file content', array( 'status' => 500 ) );
 		}
 
-		// Check for suspicious file signatures
+		// Check for suspicious file signatures.
 		$suspicious_signatures = array(
 			'<?php',
 			'<script',
@@ -1846,18 +1852,18 @@ class Drive_API extends Base {
 	 * @return string Sanitized filename.
 	 */
 	private function sanitize_filename( $filename ) {
-		// Remove path traversal attempts
+		// Remove path traversal attempts.
 		$filename = basename( $filename );
 
-		// Remove or replace dangerous characters
+		// Remove or replace dangerous characters.
 		$filename = preg_replace( '/[^a-zA-Z0-9\s\-_().]/', '', $filename );
 
-		// Ensure filename is not empty
+		// Ensure filename is not empty.
 		if ( empty( $filename ) ) {
 			$filename = 'uploaded_file_' . time();
 		}
 
-		// Limit filename length
+		// Limit filename length.
 		if ( strlen( $filename ) > 255 ) {
 			$extension        = pathinfo( $filename, PATHINFO_EXTENSION );
 			$name_without_ext = pathinfo( $filename, PATHINFO_FILENAME );
@@ -1910,7 +1916,7 @@ class Drive_API extends Base {
 	private function get_upload_error_message( $e ) {
 		$error_message = $e->getMessage();
 
-		// Map common Google API errors to user-friendly messages
+		// Map common Google API errors to user-friendly messages.
 		$error_mappings = array(
 			'quotaExceeded'         => __( 'Google Drive storage quota exceeded. Please free up space and try again.', 'wpmudev-plugin-test' ),
 			'fileSizeLimitExceeded' => __( 'File is too large for Google Drive. Please use a smaller file.', 'wpmudev-plugin-test' ),
@@ -1926,7 +1932,7 @@ class Drive_API extends Base {
 			}
 		}
 
-		// Return generic error message
+		// Return generic error message.
 		return sprintf(
 			/* translators: %s: Error message */
 			__( 'Upload failed: %s', 'wpmudev-plugin-test' ),
@@ -1956,11 +1962,11 @@ class Drive_API extends Base {
 			return new WP_Error( 'missing_file_id', 'File ID is required', array( 'status' => 400 ) );
 		}
 
-		// Sanitize file ID
+		// Sanitize file ID.
 		$file_id = sanitize_text_field( $file_id );
 
 		try {
-			// Get file metadata first to verify it exists and get name for logging
+			// Get file metadata first to verify it exists and get name for logging.
 			$file = $this->drive_service->files->get(
 				$file_id,
 				array(
@@ -1968,10 +1974,10 @@ class Drive_API extends Base {
 				)
 			);
 
-			// Delete the file
+			// Delete the file.
 			$this->drive_service->files->delete( $file_id );
 
-			// Log successful deletion
+			// Log successful deletion.
 			$this->log_debug(
 				'File deleted successfully',
 				array(
@@ -1997,10 +2003,10 @@ class Drive_API extends Base {
 			);
 
 		} catch ( Exception $e ) {
-			// Store error for admin review if enabled
+			// Store error for admin review if enabled.
 			$this->store_error_for_admin( 'File deletion', $e->getMessage(), array( 'file_id' => $file_id ) );
 
-			// Return user-friendly error message
+			// Return user-friendly error message.
 			$error_message = $this->get_delete_error_message( $e );
 			return new WP_Error( 'delete_failed', $error_message, array( 'status' => 500 ) );
 		}
@@ -2023,13 +2029,13 @@ class Drive_API extends Base {
 		}
 
 		$file_ids = $request->get_param( 'file_ids' );
-		
+
 		if ( empty( $file_ids ) || ! is_array( $file_ids ) ) {
 			return new WP_Error( 'missing_file_ids', 'File IDs are required', array( 'status' => 400 ) );
 		}
 
 		$deleted_files = array();
-		$errors = array();
+		$errors        = array();
 
 		foreach ( $file_ids as $file_id ) {
 			try {
@@ -2038,12 +2044,12 @@ class Drive_API extends Base {
 					continue;
 				}
 
-				// Get file info before deletion
+				// Get file info before deletion.
 				$file = $this->drive_service->files->get( $file_id, array( 'fields' => 'id,name,mimeType' ) );
-				
-				// Delete the file
+
+				// Delete the file.
 				$this->drive_service->files->delete( $file_id );
-				
+
 				$deleted_files[] = array(
 					'id'       => $file_id,
 					'name'     => $file->getName(),
@@ -2053,7 +2059,7 @@ class Drive_API extends Base {
 			} catch ( Exception $e ) {
 				$errors[] = sprintf(
 					/* translators: %s: File ID */
-					__( 'Failed to delete file %s: %s', 'wpmudev-plugin-test' ),
+					__( 'Failed to delete file %1$s: %2$s', 'wpmudev-plugin-test' ),
 					$file_id,
 					$e->getMessage()
 				);
@@ -2065,8 +2071,8 @@ class Drive_API extends Base {
 		}
 
 		$response_data = array(
-			'success' => true,
-			'message' => sprintf(
+			'success'       => true,
+			'message'       => sprintf(
 				/* translators: %d: Number of files deleted */
 				_n( '%d file deleted successfully', '%d files deleted successfully', count( $deleted_files ), 'wpmudev-plugin-test' ),
 				count( $deleted_files )
@@ -2090,7 +2096,7 @@ class Drive_API extends Base {
 	private function get_delete_error_message( $e ) {
 		$error_message = $e->getMessage();
 
-		// Map common Google API errors to user-friendly messages
+		// Map common Google API errors to user-friendly messages.
 		$error_mappings = array(
 			'notFound'          => __( 'File not found. It may have already been deleted.', 'wpmudev-plugin-test' ),
 			'permissionDenied'  => __( 'Permission denied. You may not have permission to delete this file.', 'wpmudev-plugin-test' ),
@@ -2103,7 +2109,7 @@ class Drive_API extends Base {
 			}
 		}
 
-		// Return generic error message
+		// Return generic error message.
 		return sprintf(
 			/* translators: %s: Error message */
 			__( 'Delete failed: %s', 'wpmudev-plugin-test' ),
@@ -2154,24 +2160,24 @@ class Drive_API extends Base {
 	 * @return WP_Error A user-friendly error response.
 	 */
 	private function handle_api_error( $e, $operation = 'API operation', $context = array() ) {
-		// Log error in development only
+		// Log error in development only.
 		$this->log_error(
 			sprintf( '%s failed: %s', $operation, $e->getMessage() ),
 			array_merge( $context, array( 'exception' => get_class( $e ) ) )
 		);
 
-		// Determine if this is a user error or system error
+		// Determine if this is a user error or system error.
 		$is_user_error = $this->is_user_error( $e );
 
 		if ( $is_user_error ) {
-			// User errors - show specific message
+			// User errors - show specific message.
 			return new WP_Error(
 				'user_error',
 				$this->get_user_friendly_error_message( $e ),
 				array( 'status' => 400 )
 			);
 		} else {
-			// System errors - show generic message in production
+			// System errors - show generic message in production.
 			$message = defined( 'WP_DEBUG' ) && WP_DEBUG
 				? sprintf(
 					/* translators: 1: Operation name, 2: Error message */
@@ -2247,7 +2253,7 @@ class Drive_API extends Base {
 			}
 		}
 
-		// Fallback to generic user error message
+		// Fallback to generic user error message.
 		return __( 'An error occurred with your request. Please check your input and try again.', 'wpmudev-plugin-test' );
 	}
 
@@ -2260,7 +2266,7 @@ class Drive_API extends Base {
 	 * @return void
 	 */
 	private function store_error_for_admin( $operation, $error_message, $context = array() ) {
-		// Only store errors when WP_DEBUG is enabled
+		// Only store errors when WP_DEBUG is enabled.
 		if ( ! defined( 'WP_DEBUG' ) || ! WP_DEBUG ) {
 			return;
 		}
@@ -2273,11 +2279,11 @@ class Drive_API extends Base {
 			'user_id'   => get_current_user_id(),
 		);
 
-		// Store in WordPress options (you might want to use a custom table for high-volume sites)
+		// Store in WordPress options (you might want to use a custom table for high-volume sites).
 		$existing_errors   = get_option( 'wpmudev_drive_errors', array() );
 		$existing_errors[] = $error_data;
 
-		// Keep only last 100 errors to prevent database bloat
+		// Keep only last 100 errors to prevent database bloat.
 		if ( count( $existing_errors ) > 100 ) {
 			$existing_errors = array_slice( $existing_errors, -100 );
 		}
@@ -2301,16 +2307,16 @@ class Drive_API extends Base {
 
 		while ( $retry_count < $max_retries ) {
 			try {
-				// Set timeout for the request
+				// Set timeout for the request.
 				$original_timeout = ini_get( 'default_socket_timeout' );
 				ini_set( 'default_socket_timeout', $timeout_seconds );
 
 				$result = $api_call();
 
-				// Restore original timeout
+				// Restore original timeout.
 				ini_set( 'default_socket_timeout', $original_timeout );
 
-				// Log successful API call
+				// Log successful API call.
 				$this->log_debug(
 					sprintf( '%s API call successful', $operation_name ),
 					array(
@@ -2325,16 +2331,16 @@ class Drive_API extends Base {
 				$last_exception = $e;
 				++$retry_count;
 
-				// Restore original timeout
+				// Restore original timeout.
 				ini_set( 'default_socket_timeout', $original_timeout );
 
-				// Check if this is a retryable error
+				// Check if this is a retryable error.
 				if ( ! $this->is_retryable_error( $e ) || $retry_count >= $max_retries ) {
 					break;
 				}
 
-				// Calculate exponential backoff delay
-				$delay = pow( 2, $retry_count - 1 ) * 1000000; // microseconds
+				// Calculate exponential backoff delay.
+				$delay = pow( 2, $retry_count - 1 ) * 1000000; // microseconds.
 				usleep( $delay );
 
 				$this->log_debug(
@@ -2349,7 +2355,7 @@ class Drive_API extends Base {
 			}
 		}
 
-		// All retries failed
+		// All retries failed.
 		$this->log_error(
 			sprintf( '%s API call failed after %d retries', $operation_name, $max_retries ),
 			array(
@@ -2377,7 +2383,7 @@ class Drive_API extends Base {
 			'rate limit',
 			'quota exceeded',
 			'server error',
-			'5\d\d', // 5xx HTTP errors
+			'5\d\d', // 5xx HTTP errors.
 		);
 
 		foreach ( $retryable_patterns as $pattern ) {
@@ -2401,10 +2407,10 @@ class Drive_API extends Base {
 			return 1;
 		}
 
-		// For Google Drive API, we can't directly calculate page number from token
-		// This is a simplified estimation - in a real implementation, you might
-		// want to store page numbers separately or use a different approach
-		return 2; // Assume page 2+ if there's a page token
+		// For Google Drive API, we can't directly calculate page number from token.
+		// This is a simplified estimation - in a real implementation, you might.
+		// want to store page numbers separately or use a different approach.
+		return 2; // Assume page 2+ if there's a page token.
 	}
 
 	/**
@@ -2417,21 +2423,21 @@ class Drive_API extends Base {
 	 * @return string|null The page token for the target page, or null if not found.
 	 */
 	private function get_page_token_for_page( $target_page, $page_size, $query, $folder_id ) {
-		// For page 1, no token needed
+		// For page 1, no token needed.
 		if ( $target_page <= 1 ) {
 			return null;
 		}
 
-		// Check if we have cached tokens
+		// Check if we have cached tokens.
 		$cache_key     = 'wpmudev_drive_page_tokens_' . md5( $query . $folder_id . $page_size );
 		$cached_tokens = get_transient( $cache_key );
 		if ( $cached_tokens && isset( $cached_tokens[ $target_page ] ) ) {
 			return $cached_tokens[ $target_page ];
 		}
 
-		// We need to fetch pages sequentially to get to the target page
+		// We need to fetch pages sequentially to get to the target page.
 		$current_token = null;
-		$tokens        = array( 1 => null ); // Page 1 has no token
+		$tokens        = array( 1 => null ); // Page 1 has no token.
 
 		for ( $page = 1; $page < $target_page; $page++ ) {
 			try {
@@ -2453,7 +2459,7 @@ class Drive_API extends Base {
 					$tokens[ $page + 1 ] = $next_token;
 					$current_token       = $next_token;
 				} else {
-					// No more pages available
+					// No more pages available.
 					break;
 				}
 			} catch ( Exception $e ) {
@@ -2462,7 +2468,7 @@ class Drive_API extends Base {
 			}
 		}
 
-		// Cache the tokens for 5 minutes
+		// Cache the tokens for 5 minutes.
 		set_transient( $cache_key, $tokens, 300 );
 
 		return isset( $tokens[ $target_page ] ) ? $tokens[ $target_page ] : null;
@@ -2479,7 +2485,7 @@ class Drive_API extends Base {
 		$error_message = $e->getMessage();
 		$error_code    = 'list_files_error';
 
-		// Map specific Google Drive API errors to user-friendly messages
+		// Map specific Google Drive API errors to user-friendly messages.
 		$error_mappings = array(
 			'quotaExceeded'     => array(
 				'message' => __( 'Google Drive API quota exceeded. Please try again later.', 'wpmudev-plugin-test' ),
@@ -2513,7 +2519,7 @@ class Drive_API extends Base {
 			),
 		);
 
-		// Find matching error
+		// Find matching error.
 		foreach ( $error_mappings as $pattern => $error_data ) {
 			if ( stripos( $error_message, $pattern ) !== false ) {
 				$error_code    = $error_data['code'];
@@ -2523,10 +2529,10 @@ class Drive_API extends Base {
 			}
 		}
 
-		// Store error for admin review
+		// Store error for admin review.
 		$this->store_error_for_admin( 'List files', $e->getMessage(), $context );
 
-		// Log the error
+		// Log the error.
 		$this->log_error(
 			'List files failed',
 			array_merge(
@@ -2538,7 +2544,7 @@ class Drive_API extends Base {
 			)
 		);
 
-		// Return appropriate error response
+		// Return appropriate error response.
 		$status_code = $status_code ?? 500;
 		return new WP_Error( $error_code, $error_message, array( 'status' => $status_code ) );
 	}
@@ -2576,10 +2582,10 @@ class Drive_API extends Base {
 	 */
 	public function get_credentials() {
 		try {
-			$client_id = get_option( 'wpmudev_drive_client_id', '' );
+			$client_id     = get_option( 'wpmudev_drive_client_id', '' );
 			$client_secret = get_option( 'wpmudev_drive_client_secret', '' );
 
-			// Decrypt credentials if they're encrypted
+			// Decrypt credentials if they're encrypted.
 			if ( ! empty( $client_id ) && $this->is_encrypted( $client_id ) ) {
 				$client_id = $this->decrypt_credential( $client_id );
 			}
@@ -2589,11 +2595,11 @@ class Drive_API extends Base {
 
 			return new WP_REST_Response(
 				array(
-					'success'      => true,
-					'data'         => array(
+					'success' => true,
+					'data'    => array(
 						'clientId'     => $client_id,
 						'clientSecret' => $client_secret,
-					)
+					),
 				)
 			);
 		} catch ( Exception $e ) {
@@ -2608,7 +2614,7 @@ class Drive_API extends Base {
 	 */
 	public function get_auth_status() {
 		try {
-			$access_token = get_option( 'wpmudev_drive_access_token', '' );
+			$access_token  = get_option( 'wpmudev_drive_access_token', '' );
 			$refresh_token = get_option( 'wpmudev_drive_refresh_token', '' );
 			$token_expires = get_option( 'wpmudev_drive_token_expires', 0 );
 
@@ -2616,10 +2622,10 @@ class Drive_API extends Base {
 
 			return new WP_REST_Response(
 				array(
-					'success'       => true,
-					'authenticated' => $is_authenticated,
+					'success'         => true,
+					'authenticated'   => $is_authenticated,
 					'has_credentials' => ! empty( get_option( 'wpmudev_drive_client_id', '' ) ),
-					'redirect_uri'  => $this->redirect_uri,
+					'redirect_uri'    => $this->redirect_uri,
 				)
 			);
 		} catch ( Exception $e ) {
@@ -2634,14 +2640,14 @@ class Drive_API extends Base {
 	 */
 	public function start_authentication() {
 		try {
-			$client_id = get_option( 'wpmudev_drive_client_id', '' );
+			$client_id     = get_option( 'wpmudev_drive_client_id', '' );
 			$client_secret = get_option( 'wpmudev_drive_client_secret', '' );
 
 			if ( empty( $client_id ) || empty( $client_secret ) ) {
 				return new WP_Error( 'no_credentials', 'Credentials not configured', array( 'status' => 400 ) );
 			}
 
-			// Ensure Google Client is initialized
+			// Ensure Google Client is initialized.
 			$this->setup_google_client();
 			if ( ! $this->client ) {
 				return new WP_Error(
@@ -2651,7 +2657,7 @@ class Drive_API extends Base {
 				);
 			}
 
-			// Decrypt credentials if they're encrypted
+			// Decrypt credentials if they're encrypted.
 			if ( $this->is_encrypted( $client_id ) ) {
 				$client_id = $this->decrypt_credential( $client_id );
 				$this->log_debug( 'Decrypted client ID', array( 'length' => strlen( $client_id ) ) );
@@ -2666,37 +2672,46 @@ class Drive_API extends Base {
 			$this->client->setRedirectUri( $this->redirect_uri );
 			$this->client->setScopes( $this->scopes );
 
-			// Generate a secure state parameter for CSRF protection
+			// Generate a secure state parameter for CSRF protection.
 			$state = wp_generate_password( 32, false );
 			update_option( 'wpmudev_drive_auth_state', $state );
 			$this->client->setState( $state );
 
 			try {
-				// Log client configuration before creating auth URL
-				$this->log_debug( 'Google Client configuration', array(
-					'client_id' => $client_id,
-					'redirect_uri' => $this->redirect_uri,
-					'scopes' => $this->scopes,
-					'state' => $state,
-					'access_type' => 'offline',
-					'prompt' => 'consent'
-				) );
-				
+				// Log client configuration before creating auth URL.
+				$this->log_debug(
+					'Google Client configuration',
+					array(
+						'client_id'    => $client_id,
+						'redirect_uri' => $this->redirect_uri,
+						'scopes'       => $this->scopes,
+						'state'        => $state,
+						'access_type'  => 'offline',
+						'prompt'       => 'consent',
+					)
+				);
+
 				$auth_url = $this->client->createAuthUrl();
-				
-				// Log for debugging
-				$this->log_debug( 'Auth URL generated', array(
-					'auth_url' => $auth_url,
-					'state' => $state,
-					'client_id' => $client_id,
-					'redirect_uri' => $this->redirect_uri,
-					'scopes' => $this->scopes
-				) );
-		} catch ( Exception $e ) {
-				$this->log_error( 'Error creating auth URL', array( 
-					'message' => $e->getMessage(),
-					'trace' => $e->getTraceAsString()
-				) );
+
+				// Log for debugging.
+				$this->log_debug(
+					'Auth URL generated',
+					array(
+						'auth_url'     => $auth_url,
+						'state'        => $state,
+						'client_id'    => $client_id,
+						'redirect_uri' => $this->redirect_uri,
+						'scopes'       => $this->scopes,
+					)
+				);
+			} catch ( Exception $e ) {
+				$this->log_error(
+					'Error creating auth URL',
+					array(
+						'message' => $e->getMessage(),
+						'trace'   => $e->getTraceAsString(),
+					)
+				);
 				throw $e;
 			}
 
@@ -2718,20 +2733,20 @@ class Drive_API extends Base {
 	 * @return bool True if encrypted, false otherwise.
 	 */
 	private function is_encrypted( $credential ) {
-		// Check for encrypted: prefix or base64 encoded data
-		return strpos( $credential, 'encrypted:' ) === 0 || (base64_decode($credential, true) !== false && strlen($credential) > 100);
+		// Check for encrypted: prefix or base64 encoded data.
+		return strpos( $credential, 'encrypted:' ) === 0 || ( base64_decode( $credential, true ) !== false && strlen( $credential ) > 100 );
 	}
 
 	/**
 	 * Handle errors consistently.
 	 *
 	 * @param Exception $e The exception.
-	 * @param string $context The context where the error occurred.
+	 * @param string    $context The context where the error occurred.
 	 * @return WP_Error The error response.
 	 */
 	private function handle_error( $e, $context ) {
 		$this->log_debug( "Error in {$context}: " . $e->getMessage() );
-		
+
 		return new WP_Error(
 			$context,
 			$e->getMessage(),
@@ -2762,13 +2777,13 @@ class Drive_API extends Base {
 		}
 
 		try {
-			// Clear all stored credentials and tokens
+			// Clear all stored credentials and tokens.
 			delete_option( 'wpmudev_drive_client_id' );
 			delete_option( 'wpmudev_drive_client_secret' );
 			delete_option( 'wpmudev_drive_access_token' );
 			delete_option( 'wpmudev_drive_auth_state' );
 
-			// Log successful clearing
+			// Log successful clearing.
 			$this->log_debug( 'Credentials cleared successfully' );
 
 			return new WP_REST_Response(

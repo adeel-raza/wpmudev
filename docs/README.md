@@ -88,7 +88,7 @@ composer install
 ### Run Unit Tests
 ```bash
 # Set up WordPress test environment
-bin/install-wp-tests.sh wordpress_test root '' localhost latest
+bin/install-wp-tests.sh wordpress_test [your_mysql_root_user] '[your_mysql_user_passwd]' localhost latest
 
 # Run tests
 vendor/bin/phpunit
@@ -124,12 +124,6 @@ vendor/bin/phpcbf --standard=WordPress app/
 - **Decision**: AES-256 with HMAC for credentials
 - **Reason**: WordPress standard, secure, no external dependencies
 - **Trade-off**: Slightly more complex than base64
-
-### 5. Google API Optimization
-- **Decision**: Prune unused Google API services during build
-- **Reason**: Reduces plugin size by removing unnecessary Google services
-- **Implementation**: Grunt task removes all services except Drive, DriveActivity, DriveLabels
-- **Result**: Significantly smaller plugin package
 
 ## File Structure
 ```

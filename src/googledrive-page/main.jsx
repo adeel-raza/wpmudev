@@ -17,6 +17,7 @@ const GoogleDriveAdmin = () => {
     });
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isCheckingAuth, setIsCheckingAuth] = useState(false);
     const [redirectUri, setRedirectUri] = useState('');
     const [credentialsLoaded, setCredentialsLoaded] = useState(false);
     const [credentialsSaved, setCredentialsSaved] = useState(false);
@@ -73,6 +74,7 @@ const GoogleDriveAdmin = () => {
         } else if (credentialsLoaded) {
             // If credentials are loaded but empty, set authenticated to false
             setIsAuthenticated(false);
+            setIsCheckingAuth(false);
         }
     }, [credentialsLoaded, credentials.clientId, credentials.clientSecret]);
 
@@ -112,6 +114,7 @@ const GoogleDriveAdmin = () => {
     };
 
     const checkAuthStatus = async () => {
+        setIsCheckingAuth(true);
         try {
             const response = await apiFetch({
                 path: '/wpmudev/v1/drive/auth-status',
@@ -124,6 +127,8 @@ const GoogleDriveAdmin = () => {
         } catch (error) {
             console.error('Error checking auth status:', error);
             setIsAuthenticated(false);
+        } finally {
+            setIsCheckingAuth(false);
         }
     };
 
@@ -632,23 +637,26 @@ const GoogleDriveAdmin = () => {
                         <h2>{__('Authentication Status', 'wpmudev-plugin-test')}</h2>
                     </div>
                     <div className="google-drive-section-body">
-                        <div className={`auth-status ${isAuthenticated ? 'authenticated' : 'not-authenticated'}`}>
-                            <span className="auth-status-icon">{isAuthenticated ? '✅' : '❌'}</span>
-                            {isAuthenticated ? __('Connected to Google Drive', 'wpmudev-plugin-test') : __('Not connected to Google Drive', 'wpmudev-plugin-test')}
+                        <div className={`auth-status ${isCheckingAuth ? 'checking' : (isAuthenticated ? 'authenticated' : 'not-authenticated')}`}>
+                            <span className="auth-status-icon">
+                                {isCheckingAuth ? '⏳' : (isAuthenticated ? '✅' : '❌')}
+                            </span>
+                            {isCheckingAuth ? __('Checking connection...', 'wpmudev-plugin-test') : 
+                             (isAuthenticated ? __('Connected to Google Drive', 'wpmudev-plugin-test') : __('Not connected to Google Drive', 'wpmudev-plugin-test'))}
                         </div>
                         
                         <div className="auth-actions">
                             {!isAuthenticated ? (
-                                <button onClick={authenticate} className="button-primary" disabled={isLoading}>
+                                <button onClick={authenticate} className="button-primary" disabled={isLoading || isCheckingAuth}>
                                     {isLoading ? __('Authenticating...', 'wpmudev-plugin-test') : __('Authenticate with Google Drive', 'wpmudev-plugin-test')}
                                 </button>
                             ) : (
-                                <button onClick={disconnect} className="button-secondary" disabled={isLoading}>
+                                <button onClick={disconnect} className="button-secondary" disabled={isLoading || isCheckingAuth}>
                                     {isLoading ? __('Disconnecting...', 'wpmudev-plugin-test') : __('Disconnect', 'wpmudev-plugin-test')}
                                 </button>
                             )}
                             
-                            <button onClick={reconfigureApp} className="button-secondary" disabled={isLoading}>
+                            <button onClick={reconfigureApp} className="button-secondary" disabled={isLoading || isCheckingAuth}>
                                 {__('Reconfigure App', 'wpmudev-plugin-test')}
                             </button>
                         </div>

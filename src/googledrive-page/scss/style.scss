@@ -186,6 +186,12 @@
     color: #842029;
 }
 
+.auth-status.checking {
+    background: #fff3cd;
+    border: 1px solid #ffecb5;
+    color: #664d03;
+}
+
 .auth-status-icon {
     font-size: 18px;
 }
