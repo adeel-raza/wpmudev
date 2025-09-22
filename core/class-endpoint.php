@@ -87,7 +87,6 @@ class Endpoint extends WP_REST_Controller {
 	 *
 	 * @return void
 	 * @since 1.0.0
-	 *
 	 */
 	public function register_hooks() {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
@@ -100,7 +99,6 @@ class Endpoint extends WP_REST_Controller {
 	 *
 	 * @return bool
 	 * @since 1.0.0
-	 *
 	 */
 	public function edit_permission( $request ) {
 		$capable = current_user_can( 'manage_options' );
@@ -113,7 +111,6 @@ class Endpoint extends WP_REST_Controller {
 		 * @param bool            $capable Is user capable?.
 		 *
 		 * @since 1.0.0
-		 *
 		 */
 		return apply_filters( 'wpmudev_plugintest_rest_settings_permission', $capable, $request );
 	}
@@ -126,7 +123,6 @@ class Endpoint extends WP_REST_Controller {
 	 *
 	 * @return WP_REST_Response
 	 * @since 1.0.0
-	 *
 	 */
 	public function get_response( $data = array(), $success = true ) {
 		// Response status.

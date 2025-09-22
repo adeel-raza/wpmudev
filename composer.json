@@ -8,10 +8,12 @@
 		},
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true
-		}
+		},
+		"prefer-stable": true,
+		"optimize-autoloader": true
 	},
 	"homepage": "https://wpmudev.com/",
-	"license": "GPL-2.0+",
+	"license": "GPL-2.0-or-later",
 	"authors": [
 		{
 			"name": "Incsub",
@@ -20,22 +22,30 @@
 	],
 	"require": {
 		"php": ">=7.4",
-		"google/apiclient": "^2.15"
+		"google/apiclient": "^2.16",
+		"firebase/php-jwt": "^6.10"
 	},
 	"require-dev": {
 		"wp-coding-standards/wpcs": "^3.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-		"phpcompatibility/phpcompatibility-wp": "^2.1"
+		"phpcompatibility/phpcompatibility-wp": "^2.1",
+		"phpunit/phpunit": "^9.6",
+		"yoast/phpunit-polyfills": "^4.0"
 	},
-	"scripts": {
-		"post-install-cmd": [
-			"Google_Task_Composer::cleanup"
-		],
-		"post-update-cmd": [
-			"Google_Task_Composer::cleanup"
-		]
+	"conflict": {
+		"google/apiclient": "<2.15.0",
+		"firebase/php-jwt": "<6.0.0"
 	},
 	"autoload": {
-        "classmap": ["core/", "app/"]
-	}
+		"classmap": ["core/", "app/"],
+		"psr-4": {
+			"WPMUDEV\\PluginTest\\": "app/"
+		}
+	},
+  "scripts": {
+    "build": [
+      "@composer install --optimize-autoloader",
+      "@composer install --no-dev --optimize-autoloader"
+    ]
+  }
 }

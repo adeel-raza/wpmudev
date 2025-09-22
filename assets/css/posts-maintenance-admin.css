@@ -1,0 +1,445 @@
+/**
+ * Posts Maintenance Admin Styles
+ *
+ * @package WPMUDEV_PluginTest
+ * @since 1.0.0
+ */
+
+/* General Layout */
+.wpmudev-posts-maintenance {
+    max-width: 1200px;
+    margin: 20px 0;
+}
+
+.wpmudev-posts-maintenance h1 {
+    margin-bottom: 20px;
+    color: #1d2327;
+}
+
+.wpmudev-posts-maintenance h2 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #1d2327;
+    border-bottom: 1px solid #ccd0d4;
+    padding-bottom: 10px;
+}
+
+/* Cards */
+.wpmudev-card {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.wpmudev-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.wpmudev-card-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+/* Buttons */
+.wpmudev-button {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #2271b1;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 3px;
+    border: 1px solid #2271b1;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.wpmudev-button:hover {
+    background: #135e96;
+    border-color: #135e96;
+    color: #fff;
+}
+
+.wpmudev-button:disabled {
+    background: #c3c4c7;
+    border-color: #c3c4c7;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.wpmudev-button-secondary {
+    background: #f6f7f7;
+    border-color: #c3c4c7;
+    color: #1d2327;
+}
+
+.wpmudev-button-secondary:hover {
+    background: #e0e0e0;
+    border-color: #8c8f94;
+    color: #1d2327;
+}
+
+.wpmudev-button-danger {
+    background: #d63638;
+    border-color: #d63638;
+    color: #fff;
+}
+
+.wpmudev-button-danger:hover {
+    background: #b32d2e;
+    border-color: #b32d2e;
+    color: #fff;
+}
+
+/* Form Elements */
+.wpmudev-form-group {
+    margin-bottom: 20px;
+}
+
+.wpmudev-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.wpmudev-form-group input[type="text"],
+.wpmudev-form-group input[type="number"],
+.wpmudev-form-group select {
+    width: 100%;
+    max-width: 300px;
+    padding: 8px 12px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.wpmudev-form-group input:focus,
+.wpmudev-form-group select:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: none;
+}
+
+.wpmudev-checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.wpmudev-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.wpmudev-checkbox-item input[type="checkbox"] {
+    margin: 0;
+}
+
+.wpmudev-checkbox-item label {
+    margin: 0;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+/* Progress Bar */
+.wpmudev-progress {
+    width: 100%;
+    height: 20px;
+    background: #f0f0f1;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.wpmudev-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #2271b1, #135e96);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.wpmudev-progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.wpmudev-progress-text {
+    text-align: center;
+    margin-top: 5px;
+    font-size: 14px;
+    color: #1d2327;
+}
+
+/* Status Indicators */
+.wpmudev-status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.wpmudev-status-running {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.wpmudev-status-completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.wpmudev-status-error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.wpmudev-status-paused {
+    background: #fff3cd;
+    color: #856404;
+}
+
+/* Statistics */
+.wpmudev-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.wpmudev-stat-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    text-align: center;
+    border: 1px solid #e9ecef;
+}
+
+.wpmudev-stat-number {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2271b1;
+    margin-bottom: 5px;
+}
+
+.wpmudev-stat-label {
+    font-size: 14px;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Notifications */
+.wpmudev-notification {
+    padding: 12px 16px;
+    margin: 15px 0;
+    border-radius: 4px;
+    border-left: 4px solid;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.wpmudev-notification-success {
+    background: #d4edda;
+    border-left-color: #28a745;
+    color: #155724;
+}
+
+.wpmudev-notification-error {
+    background: #f8d7da;
+    border-left-color: #dc3545;
+    color: #721c24;
+}
+
+.wpmudev-notification-warning {
+    background: #fff3cd;
+    border-left-color: #ffc107;
+    color: #856404;
+}
+
+.wpmudev-notification-info {
+    background: #d1ecf1;
+    border-left-color: #17a2b8;
+    color: #0c5460;
+}
+
+.wpmudev-notification-icon {
+    font-size: 16px;
+}
+
+/* Loading Spinner */
+.wpmudev-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #2271b1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Tables */
+.wpmudev-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.wpmudev-table th,
+.wpmudev-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.wpmudev-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #1d2327;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.wpmudev-table tr:hover {
+    background: #f8f9fa;
+}
+
+.wpmudev-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wpmudev-posts-maintenance {
+        margin: 10px;
+    }
+
+    .wpmudev-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .wpmudev-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .wpmudev-checkbox-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .wpmudev-table {
+        font-size: 14px;
+    }
+
+    .wpmudev-table th,
+    .wpmudev-table td {
+        padding: 8px 10px;
+    }
+}
+
+/* Utility Classes */
+.wpmudev-text-center {
+    text-align: center;
+}
+
+.wpmudev-text-right {
+    text-align: right;
+}
+
+.wpmudev-mb-0 {
+    margin-bottom: 0;
+}
+
+.wpmudev-mt-20 {
+    margin-top: 20px;
+}
+
+.wpmudev-hidden {
+    display: none;
+}
+
+.wpmudev-visible {
+    display: block;
+}
+
+/* WordPress Admin Integration */
+.wrap .wpmudev-posts-maintenance h1 {
+    margin-top: 0;
+}
+
+.wpmudev-posts-maintenance .notice {
+    margin: 15px 0;
+}
+
+/* Animation for smooth transitions */
+.wpmudev-fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-09-19T23:18:04+00:00\n"
+"POT-Creation-Date: 2025-09-22T14:21:20+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 
@@ -25,292 +25,772 @@ msgstr ""
 msgid "PLEASE ADD YOU FULL NAME HERE"
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:81
-#: app/admin-pages/class-googledrive-settings.php:182
+#: app/admin-pages/class-googledrive-settings.php:86
+#: app/admin-pages/class-googledrive-settings.php:356
 msgid "Google Drive Test"
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:183
-msgid "Test Google Drive API integration for applicant assessment"
+#: app/admin-pages/class-googledrive-settings.php:161
+msgid "Successfully authenticated with Google Drive!"
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:186
-msgid "Set Google Drive Credentials"
+#. translators: %s: User display name
+#: app/admin-pages/class-googledrive-settings.php:168
+msgid "Connected as: %s"
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:187
-msgid "Client ID"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:188
-msgid "You can get Client ID from Google Cloud Console. Make sure to enable Google Drive API."
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:189
-msgid "Client Secret"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:190
-msgid "You can get Client Secret from Google Cloud Console."
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:191
-msgid "Please use this URL in your Google API's Authorized redirect URIs field."
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:192
-msgid "Required scopes for Google Drive API:"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:193
-msgid "Save Credentials"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:196
-#: app/admin-pages/class-googledrive-settings.php:203
-msgid "Authenticate with Google Drive"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:197
-msgid "Please authenticate with Google Drive to proceed with the test."
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:198
-msgid "This test will require the following permissions:"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:199
-msgid "View and manage Google Drive files"
+#: app/admin-pages/class-googledrive-settings.php:184
+msgid "You can now manage your Google Drive files from this page."
 msgstr ""
 
 #: app/admin-pages/class-googledrive-settings.php:200
-msgid "Upload new files to Drive"
+#: app/endpoints/v1/class-googledrive-rest.php:564
+#: app/endpoints/v1/class-googledrive-rest.php:2040
+msgid "Access was denied. Please grant the required permissions to continue."
 msgstr ""
 
 #: app/admin-pages/class-googledrive-settings.php:201
-msgid "Create folders in Drive"
+#: app/endpoints/v1/class-googledrive-rest.php:565
+#: app/endpoints/v1/class-googledrive-rest.php:2041
+msgid "Invalid request. Please try again."
 msgstr ""
 
 #: app/admin-pages/class-googledrive-settings.php:202
-msgid "Change Credentials"
+#: app/endpoints/v1/class-googledrive-rest.php:566
+#: app/endpoints/v1/class-googledrive-rest.php:2042
+msgid "Unauthorized client. Please check your OAuth configuration."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:203
+#: app/endpoints/v1/class-googledrive-rest.php:568
+#: app/endpoints/v1/class-googledrive-rest.php:592
+#: app/endpoints/v1/class-googledrive-rest.php:2043
+msgid "Invalid scope. Please check your OAuth configuration."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:204
+#: app/endpoints/v1/class-googledrive-rest.php:569
+msgid "Google server error. Please try again later."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:205
+#: app/endpoints/v1/class-googledrive-rest.php:570
+msgid "Google service temporarily unavailable. Please try again later."
 msgstr ""
 
 #: app/admin-pages/class-googledrive-settings.php:206
-msgid "Google Drive Files"
+#: app/endpoints/v1/class-googledrive-rest.php:588
+msgid "Invalid authorization code. Please try authenticating again."
 msgstr ""
 
 #: app/admin-pages/class-googledrive-settings.php:207
-msgid "Upload File"
+#: app/endpoints/v1/class-googledrive-rest.php:589
+#: app/endpoints/v1/class-googledrive-rest.php:2039
+msgid "Invalid client credentials. Please check your Client ID and Client Secret."
 msgstr ""
 
 #: app/admin-pages/class-googledrive-settings.php:208
-msgid "Create Folder"
+#: app/endpoints/v1/class-googledrive-rest.php:474
+msgid "Authorization code not received from Google."
 msgstr ""
 
 #: app/admin-pages/class-googledrive-settings.php:209
-msgid "Enter folder name"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:210
-msgid "Select File"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:211
-msgid "No file selected"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:212
-msgid "Refresh Files"
+#: app/endpoints/v1/class-googledrive-rest.php:500
+msgid "Google Client not configured. Please check your credentials."
 msgstr ""
 
 #: app/admin-pages/class-googledrive-settings.php:215
-msgid "Folder"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:216
-msgid "File"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:217
-msgid "Download"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:218
-msgid "View in Drive"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:221
-msgid "Credentials saved successfully!"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:222
-msgid "Failed to save credentials"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:223
-msgid "Authentication successful!"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:224
+#: app/admin-pages/class-googledrive-settings.php:398
 msgid "Authentication failed"
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:225
-msgid "File uploaded successfully!"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:226
-msgid "Failed to upload file"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:227
-msgid "Folder created successfully!"
-msgstr ""
-
+#: app/admin-pages/class-googledrive-settings.php:220
+#: app/admin-pages/class-googledrive-settings.php:224
 #: app/admin-pages/class-googledrive-settings.php:228
-msgid "Failed to create folder"
+msgid "Suggestion:"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:221
+msgid "Please verify your Client ID and Client Secret in the Google Cloud Console."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:225
+msgid "Please ensure the required scopes are enabled in your Google Cloud Console project."
 msgstr ""
 
 #: app/admin-pages/class-googledrive-settings.php:229
-msgid "Files loaded successfully!"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:230
-msgid "Failed to load files"
-msgstr ""
-
-#: app/admin-pages/class-googledrive-settings.php:233
-msgid "Please enter Client ID"
+msgid "Please click \"Allow\" when prompted by Google to grant the required permissions."
 msgstr ""
 
 #: app/admin-pages/class-googledrive-settings.php:234
+#: app/admin-pages/class-googledrive-settings.php:449
+msgid "Try Again"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:357
+msgid "Test Google Drive API integration for applicant assessment"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:360
+msgid "Set Google Drive Credentials"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:361
+msgid "Client ID"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:362
+msgid "You can get Client ID from Google Cloud Console. Make sure to enable Google Drive API."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:363
+msgid "Client Secret"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:364
+msgid "You can get Client Secret from Google Cloud Console."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:365
+msgid "Please use this URL in your Google API's Authorized redirect URIs field."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:366
+msgid "Required scopes for Google Drive API:"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:367
+msgid "Save Credentials"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:370
+#: app/admin-pages/class-googledrive-settings.php:377
+msgid "Authenticate with Google Drive"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:371
+msgid "Please authenticate with Google Drive to proceed with the test."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:372
+msgid "This test will require the following permissions:"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:373
+msgid "View and manage Google Drive files"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:374
+msgid "Upload new files to Drive"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:375
+msgid "Create folders in Drive"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:376
+msgid "Change Credentials"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:380
+msgid "Google Drive Files"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:381
+msgid "Upload File"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:382
+msgid "Create Folder"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:383
+msgid "Enter folder name"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:384
+msgid "Select File"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:385
+msgid "No file selected"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:386
+msgid "Refresh Files"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:389
+msgid "Folder"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:390
+msgid "File"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:391
+msgid "Download"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:392
+msgid "View in Drive"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:395
+msgid "Credentials saved successfully!"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:396
+msgid "Failed to save credentials"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:397
+msgid "Authentication successful!"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:399
+msgid "File uploaded successfully!"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:400
+msgid "Failed to upload file"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:401
+msgid "Folder created successfully!"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:402
+msgid "Failed to create folder"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:403
+msgid "Files loaded successfully!"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:404
+msgid "Failed to load files"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:407
+msgid "Please enter Client ID"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:408
 msgid "Please enter Client Secret"
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:235
+#: app/admin-pages/class-googledrive-settings.php:409
 msgid "Please enter both Client ID and Client Secret"
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:236
+#: app/admin-pages/class-googledrive-settings.php:410
 msgid "Please enter a folder name"
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:237
+#: app/admin-pages/class-googledrive-settings.php:411
 msgid "Please select a file"
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:240
+#: app/admin-pages/class-googledrive-settings.php:414
 msgid "Error saving credentials:"
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:241
+#: app/admin-pages/class-googledrive-settings.php:415
 msgid "Error authenticating:"
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:242
+#: app/admin-pages/class-googledrive-settings.php:416
 msgid "Error uploading file:"
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:243
+#: app/admin-pages/class-googledrive-settings.php:417
 msgid "Error creating folder:"
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:244
+#: app/admin-pages/class-googledrive-settings.php:418
 msgid "Error loading files:"
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:247
+#: app/admin-pages/class-googledrive-settings.php:421
 msgid "Loading..."
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:248
+#: app/admin-pages/class-googledrive-settings.php:422
 msgid "Saving..."
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:249
+#: app/admin-pages/class-googledrive-settings.php:423
+#: app/admin-pages/class-googledrive-settings.php:484
 msgid "Uploading..."
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:250
+#: app/admin-pages/class-googledrive-settings.php:424
+#: app/admin-pages/class-googledrive-settings.php:485
 msgid "Creating..."
 msgstr ""
 
-#: app/admin-pages/class-googledrive-settings.php:253
+#: app/admin-pages/class-googledrive-settings.php:427
 msgid "No files found in your Drive. Upload a file or create a folder to get started."
 msgstr ""
 
-#: app/admin-pages/class-posts-maintenance.php:51
+#: app/admin-pages/class-googledrive-settings.php:430
+msgid "Please configure your Google Drive credentials to get started."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:431
+msgid "Credentials configured. Please authenticate with Google Drive to access your files."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:432
+msgid "Successfully connected to Google Drive. You can now manage your files."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:433
+msgid "There was an error with your Google Drive connection. Please check your credentials."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:436
+msgid "Checking connection status..."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:437
+msgid "Connected to Google Drive"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:438
+msgid "Not connected to Google Drive"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:439
+msgid "Connection expired. Please re-authenticate."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:442
+msgid "Configure Credentials"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:443
+msgid "Reconfigure Credentials"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:444
+msgid "Reconnect to Google Drive"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:445
+msgid "Disconnect from Google Drive"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:448
+msgid "Error loading status"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:450
+msgid "Selected file"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:451
+msgid "Are you sure you want to delete this file?"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:452
+msgid "Delete"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:453
+msgid "Deleting..."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:456
+msgid "Configure your Google OAuth credentials to enable Google Drive integration."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:457
+msgid "Enter Client ID"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:458
+msgid "Format: 123456789-abcdefg.apps.googleusercontent.com"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:459
+msgid "Enter Client Secret"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:460
+msgid "This will be encrypted before storage."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:461
+msgid "Invalid Client ID format. Please check your Google Console credentials."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:464
+msgid "Redirect URI Configuration"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:465
+msgid "Add this exact URL to your Google Cloud Console OAuth 2.0 Client configuration:"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:466
+msgid "Copy this URL and paste it in the \"Authorized redirect URIs\" field in your Google Cloud Console."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:469
+msgid "Required OAuth Scopes"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:470
+msgid "This plugin requires the following Google Drive API permissions:"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:471
+msgid "Drive File Access"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:472
+msgid "View and manage Google Drive files and folders"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:473
+msgid "Drive Read-Only Access"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:474
+msgid "View Google Drive files and folders"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:475
+msgid "These permissions are required for the plugin to function properly. The plugin will only access files you explicitly interact with."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:476
+msgid "Failed to delete file"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:477
+msgid "Folder Name"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:480
+msgid "Choose a file to upload to your Google Drive. Maximum file size: 10MB."
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:481
+msgid "Folder name is too long (max 255 characters)"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:482
+msgid "Folder name contains invalid characters"
+msgstr ""
+
+#: app/admin-pages/class-googledrive-settings.php:483
+msgid "Selected file:"
+msgstr ""
+
+#: app/admin-pages/class-posts-maintenance.php:50
 msgid "Posts Maintenance"
 msgstr ""
 
-#: app/admin-pages/class-posts-maintenance.php:131
+#: app/admin-pages/class-posts-maintenance.php:160
 msgid "Scan started successfully"
 msgstr ""
 
-#: app/admin-pages/class-posts-maintenance.php:291
+#: app/admin-pages/class-posts-maintenance.php:475
 msgid "Posts Scan Status"
 msgstr ""
 
-#: app/admin-pages/class-posts-maintenance.php:295
+#: app/admin-pages/class-posts-maintenance.php:479
 msgid "Status:"
 msgstr ""
 
-#: app/admin-pages/class-posts-maintenance.php:297
+#: app/admin-pages/class-posts-maintenance.php:481
 msgid "Last Scan:"
 msgstr ""
 
-#: app/admin-pages/class-posts-maintenance.php:311
+#: app/admin-pages/class-posts-maintenance.php:495
 msgid "Scan Configuration"
 msgstr ""
 
-#: app/admin-pages/class-posts-maintenance.php:317
+#: app/admin-pages/class-posts-maintenance.php:502
 msgid "Post Types"
 msgstr ""
 
-#: app/admin-pages/class-posts-maintenance.php:332
+#: app/admin-pages/class-posts-maintenance.php:517
 msgid "Batch Size"
 msgstr ""
 
-#: app/admin-pages/class-posts-maintenance.php:335
+#: app/admin-pages/class-posts-maintenance.php:520
 msgid "Number of posts to process per batch (1-100)"
 msgstr ""
 
-#: app/admin-pages/class-posts-maintenance.php:344
+#: app/admin-pages/class-posts-maintenance.php:529
+msgid "Reset Status"
+msgstr ""
+
+#: app/admin-pages/class-posts-maintenance.php:532
 msgid "Start Scan"
 msgstr ""
 
-#: app/admin-pages/class-posts-maintenance.php:347
+#: app/admin-pages/class-posts-maintenance.php:535
 msgid "Stop Scan"
 msgstr ""
 
-#: app/admin-pages/class-posts-maintenance.php:381
-msgid "Please select at least one post type"
+#: app/endpoints/v1/class-googledrive-rest.php:282
+msgid "Security nonce is missing."
 msgstr ""
 
-#: app/admin-pages/class-posts-maintenance.php:400
-msgid "Failed to start scan"
+#: app/endpoints/v1/class-googledrive-rest.php:290
+msgid "Security nonce is invalid."
 msgstr ""
 
-#: app/endpoints/v1/class-googledrive-rest.php:218
+#: app/endpoints/v1/class-googledrive-rest.php:363
 msgid "Credentials saved successfully"
 msgstr ""
 
-#. translators: 1: Required PHP version, 2: Current PHP version
-#: core/class-dependency-manager.php:90
-msgid "WPMU DEV Plugin Test requires PHP %1$s or higher. You are running PHP %2$s."
+#: app/endpoints/v1/class-googledrive-rest.php:382
+msgid "Insufficient permissions to start authentication."
 msgstr ""
 
-#. translators: 1: Required WordPress version, 2: Current WordPress version
-#: core/class-dependency-manager.php:104
-msgid "WPMU DEV Plugin Test requires WordPress %1$s or higher. You are running WordPress %2$s."
+#: app/endpoints/v1/class-googledrive-rest.php:398
+msgid "Google OAuth credentials not configured. Please set up your Client ID and Client Secret first."
 msgstr ""
 
-#. translators: %s: Plugin name
-#: core/class-dependency-manager.php:175
-msgid "Warning: %s is active and may conflict with WPMU DEV Plugin Test's Google API integration."
+#: app/endpoints/v1/class-googledrive-rest.php:409
+msgid "Failed to initialize Google Client. Please check your credentials."
 msgstr ""
 
-#. translators: %s: Plugin name
-#: core/class-dependency-manager.php:190
-msgid "Warning: %s is active and may conflict with WPMU DEV Plugin Test's HTTP client."
+#: app/endpoints/v1/class-googledrive-rest.php:433
+msgid "Redirecting to Google for authentication..."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:488
+msgid "Invalid state parameter. Possible CSRF attack."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:520
+msgid "No access token received from Google."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:531
+msgid "Authentication successful but connection test failed. Please try again."
+msgstr ""
+
+#. translators: %s: Error message
+#: app/endpoints/v1/class-googledrive-rest.php:547
+msgid "Authentication failed: %s"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:550
+msgid "Authentication failed. Please try again."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:567
+msgid "Unsupported response type. Please contact support."
+msgstr ""
+
+#. translators: %s: OAuth error code
+#: app/endpoints/v1/class-googledrive-rest.php:575
+msgid "OAuth error: %s"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:590
+msgid "Client not authorized. Please check your OAuth configuration."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:591
+msgid "Unsupported grant type. Please contact support."
+msgstr ""
+
+#. translators: %s: Token error code
+#: app/endpoints/v1/class-googledrive-rest.php:597
+msgid "Token error: %s"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:644
+msgid "Google Client not configured"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:664
+msgid "Connection test successful"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:671
+msgid "Connection test failed - no user data received"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1002
+msgid "File exceeds upload_max_filesize directive"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1003
+msgid "File exceeds MAX_FILE_SIZE directive"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1004
+msgid "File was only partially uploaded"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1005
+msgid "No file was uploaded"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1006
+msgid "Missing temporary folder"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1007
+msgid "Failed to write file to disk"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1008
+msgid "File upload stopped by extension"
+msgstr ""
+
+#. translators: %d: Error code number
+#: app/endpoints/v1/class-googledrive-rest.php:1015
+msgid "Unknown upload error: %d"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1068
+msgid "File too large for current memory limit. Please try a smaller file."
+msgstr ""
+
+#. translators: %s: Current date and time
+#: app/endpoints/v1/class-googledrive-rest.php:1082
+msgid "Uploaded via WPMU DEV Plugin Test on %s"
+msgstr ""
+
+#. translators: %s: File name
+#: app/endpoints/v1/class-googledrive-rest.php:1145
+msgid "File \"%s\" uploaded successfully"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1434
+msgid "Successfully disconnected from Google Drive"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1466
+msgid "WordPress salts not configured. Cannot encrypt credentials securely."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1480
+msgid "Failed to encrypt credential using OpenSSL."
+msgstr ""
+
+#. translators: %s: Formatted file size
+#: app/endpoints/v1/class-googledrive-rest.php:1600
+msgid "File size exceeds 10MB limit. Current size: %s"
+msgstr ""
+
+#. translators: %s: File MIME type
+#: app/endpoints/v1/class-googledrive-rest.php:1647
+msgid "File type \"%s\" is not allowed. Allowed types: images, documents, videos, audio, and archives"
+msgstr ""
+
+#. translators: 1: File extension, 2: MIME type
+#: app/endpoints/v1/class-googledrive-rest.php:1663
+msgid "File extension \".%1$s\" does not match MIME type \"%2$s\""
+msgstr ""
+
+#. translators: %s: Suspicious content signature
+#: app/endpoints/v1/class-googledrive-rest.php:1708
+msgid "File contains suspicious content: %s"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1792
+#: app/endpoints/v1/class-googledrive-rest.php:2034
+msgid "Google Drive storage quota exceeded. Please free up space and try again."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1793
+#: app/endpoints/v1/class-googledrive-rest.php:2035
+msgid "File is too large for Google Drive. Please use a smaller file."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1794
+#: app/endpoints/v1/class-googledrive-rest.php:2036
+msgid "Invalid file format. Please check the file and try again."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1795
+#: app/endpoints/v1/class-googledrive-rest.php:2037
+#: app/endpoints/v1/class-googledrive-rest.php:2297
+msgid "Permission denied. Please check your Google Drive permissions."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1796
+#: app/endpoints/v1/class-googledrive-rest.php:2307
+msgid "Google Drive service not found. Please try again later."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1797
+#: app/endpoints/v1/class-googledrive-rest.php:1899
+msgid "Too many requests. Please wait a moment and try again."
+msgstr ""
+
+#. translators: %s: Error message
+#: app/endpoints/v1/class-googledrive-rest.php:1809
+msgid "Upload failed: %s"
+msgstr ""
+
+#. translators: %s: File name
+#: app/endpoints/v1/class-googledrive-rest.php:1865
+msgid "File \"%s\" deleted successfully"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1897
+msgid "File not found. It may have already been deleted."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1898
+msgid "Permission denied. You may not have permission to delete this file."
+msgstr ""
+
+#. translators: %s: Error message
+#: app/endpoints/v1/class-googledrive-rest.php:1911
+msgid "Delete failed: %s"
+msgstr ""
+
+#. translators: 1: Operation name, 2: Error message
+#: app/endpoints/v1/class-googledrive-rest.php:1980
+msgid "%1$s failed: %2$s"
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:1984
+msgid "An unexpected error occurred. Please try again later."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:2038
+msgid "Invalid authorization. Please try authenticating again."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:2053
+msgid "An error occurred with your request. Please check your input and try again."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:2287
+msgid "Google Drive API quota exceeded. Please try again later."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:2292
+msgid "Too many requests to Google Drive. Please wait a moment and try again."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:2302
+msgid "Invalid search query. Please check your search parameters."
+msgstr ""
+
+#: app/endpoints/v1/class-googledrive-rest.php:2312
+msgid "Request timed out. Please try again with a smaller page size."
+msgstr ""
+
+#: core/class-dependency-checker.php:57
+msgid "WPMU DEV Plugin Test - Missing Dependencies"
+msgstr ""
+
+#: core/class-dependency-checker.php:60
+msgid "Required dependencies are missing. Please run \"composer install\" in the plugin directory."
 msgstr ""

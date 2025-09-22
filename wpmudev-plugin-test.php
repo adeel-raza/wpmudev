@@ -17,7 +17,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-// Support for site-level autoloading.
+
+// Load Composer autoloader
 if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';
 }
@@ -73,7 +74,6 @@ class WPMUDEV_PluginTest {
 	 *
 	 * @return WPMUDEV_PluginTest class instance.
 	 * @since 1.0.0
-	 *
 	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
@@ -87,21 +87,90 @@ class WPMUDEV_PluginTest {
 	 * Class initializer.
 	 */
 	public function load() {
-		load_plugin_textdomain(
-			'wpmudev-plugin-test',
-			false,
-			dirname( plugin_basename( __FILE__ ) ) . '/languages'
+		// Load translations on init hook
+		add_action(
+			'init',
+			function () {
+				load_plugin_textdomain(
+					'wpmudev-plugin-test',
+					false,
+					dirname( plugin_basename( __FILE__ ) ) . '/languages'
+				);
+			}
 		);
 
-		WPMUDEV\PluginTest\Loader::instance();
+		// Load Posts Maintenance file
+		$posts_file = __DIR__ . '/app/admin-pages/class-posts-maintenance.php';
+		if ( file_exists( $posts_file ) ) {
+			require_once $posts_file;
+		}
+
+		// Initialize Posts Maintenance on init hook (after translations are loaded)
+		add_action(
+			'init',
+			function () {
+				if ( class_exists( 'WPMUDEV\\PluginTest\\App\\Admin_Pages\\PostsMaintenance' ) ) {
+					\WPMUDEV\PluginTest\App\Admin_Pages\PostsMaintenance::instance()->init();
+				}
+			}
+		);
+
+		// Initialize Core Loader on init hook
+		add_action(
+			'init',
+			function () {
+				WPMUDEV\PluginTest\Core\Loader::instance();
+			}
+		);
+
+		// Initialize dependency management
+
+		// Load Google Drive components
+		$google_drive_file = __DIR__ . '/app/admin-pages/class-googledrive-settings.php';
+		if ( file_exists( $google_drive_file ) ) {
+			require_once $google_drive_file;
+		}
+
+		$google_drive_rest_file = __DIR__ . '/app/endpoints/v1/class-googledrive-rest.php';
+		if ( file_exists( $google_drive_rest_file ) ) {
+			require_once $google_drive_rest_file;
+		}
+
+		// Initialize Google Drive components on init hook (after translations are loaded)
+		add_action(
+			'init',
+			function () {
+				if ( class_exists( 'WPMUDEV\\PluginTest\\App\\Admin_Pages\\Google_Drive' ) ) {
+					\WPMUDEV\PluginTest\App\Admin_Pages\Google_Drive::instance()->init();
+				}
+				if ( class_exists( 'WPMUDEV\\PluginTest\\Endpoints\\V1\\Drive_API' ) ) {
+					\WPMUDEV\PluginTest\Endpoints\V1\Drive_API::instance()->init();
+				}
+			}
+		);
+
+		// Load WP-CLI commands if WP-CLI is available
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			require_once __DIR__ . '/app/cli/class-posts-maintenance-cli.php';
+			\WP_CLI::add_command( 'wpmudev posts', 'WPMUDEV\\PluginTest\\App\\CLI\\PostsMaintenanceCLI' );
+		}
 	}
 }
 
 // Init the plugin and load the plugin instance for the first time.
-add_action(
-	'init',
-	function () {
-		WPMUDEV_PluginTest::get_instance()->load();
-	},
-	9
-);
+if ( function_exists( 'add_action' ) ) {
+	add_action(
+		'plugins_loaded',
+		function () {
+			WPMUDEV_PluginTest::get_instance()->load();
+		},
+		1
+	);
+
+	// Cleanup on plugin deactivation
+	register_deactivation_hook(
+		__FILE__,
+		function () {
+		}
+	);
+}
