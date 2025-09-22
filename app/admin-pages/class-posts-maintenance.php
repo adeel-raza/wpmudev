@@ -207,14 +207,26 @@ class PostsMaintenance extends Base {
 							'timestamp' => time(),
 						)
 					);
+					
+					// Clear progress data to prevent issues with subsequent scans
+					delete_option( 'wpmudev_scan_progress' );
 				}
 			}
 		}
 
+		// Calculate progress percentage
+		$progress_percentage = 0;
+		if ( ! empty( $progress ) && isset( $progress['total'] ) && $progress['total'] > 0 ) {
+			$progress_percentage = ( $progress['processed'] / $progress['total'] ) * 100;
+		}
+
 		wp_send_json_success(
 			array(
-				'progress' => $progress,
-				'status'   => $status,
+				'progress'         => $progress_percentage,
+				'processed_posts'  => isset( $progress['processed'] ) ? $progress['processed'] : 0,
+				'total_posts'      => isset( $progress['total'] ) ? $progress['total'] : 0,
+				'is_running'       => $status === 'running',
+				'status'           => $status,
 			)
 		);
 	}
@@ -366,16 +378,9 @@ class PostsMaintenance extends Base {
 
 		$processed = 0;
 		foreach ( $posts as $post_id ) {
-			// Check if this post was already processed in this scan
-			$last_scan          = get_post_meta( $post_id, 'wpmudev_test_last_scan', true );
-			$current_scan_start = get_option( 'wpmudev_scan_start_time', 0 );
-
-			// Only process if not already processed in this scan session
-			if ( empty( $last_scan ) || $last_scan < $current_scan_start ) {
-				// Update post meta with current timestamp.
-				update_post_meta( $post_id, 'wpmudev_test_last_scan', time() );
-				++$processed;
-			}
+			// Always process posts - update post meta with current timestamp
+			update_post_meta( $post_id, 'wpmudev_test_last_scan', time() );
+			++$processed;
 		}
 
 		// Update progress.
@@ -405,12 +410,15 @@ class PostsMaintenance extends Base {
 				)
 			);
 			wp_clear_scheduled_hook( 'wpmudev_process_posts_batch' );
+			
+			// Clear progress data to prevent issues with subsequent scans
+			delete_option( 'wpmudev_scan_progress' );
 			return;
 		}
 
 		// Check if we need to process more batches.
-		// If we got fewer posts than requested, we've reached the end
-		if ( count( $posts ) < $batch_size || $progress['processed'] >= $progress['total'] ) {
+		// If we got no posts or have processed all posts, we've reached the end
+		if ( count( $posts ) == 0 || $progress['processed'] >= $progress['total'] ) {
 			// Scan completed - show completion notification
 			update_option( 'wpmudev_scan_status', 'completed' );
 			update_option( 'wpmudev_last_scan_time', time() );
@@ -428,6 +436,9 @@ class PostsMaintenance extends Base {
 
 			// Clear any remaining scheduled events
 			wp_clear_scheduled_hook( 'wpmudev_process_posts_batch' );
+			
+			// Clear progress data to prevent issues with subsequent scans
+			delete_option( 'wpmudev_scan_progress' );
 		} else {
 			// Schedule next batch with a 1-second delay
 			wp_schedule_single_event( time() + 1, 'wpmudev_process_posts_batch', array( $post_types, $batch_size, $offset + $batch_size ) );
@@ -490,7 +501,7 @@ class PostsMaintenance extends Base {
 						<?php if ( $last_scan > 0 ) : ?>
 							<p><strong><?php _e( 'Last Scan:', 'wpmudev-plugin-test' ); ?></strong> <?php echo esc_html( date( 'Y-m-d H:i:s', $last_scan ) ); ?></p>
 						<?php endif; ?>
-						<div id="progress-bar" style="display: none;">
+						<div id="progress-bar">
 							<div class="progress-bar">
 								<div class="progress-fill"></div>
 							</div>

@@ -28,7 +28,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 		);
 
 		// Run the scan function
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 		$cli->scan( array(), array( 'dry-run' => false ) );
 
 		// Assert that meta was updated
@@ -46,7 +46,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 		$this->assertEmpty( $posts, 'Database should be empty for this test' );
 
 		// Run scan function - should not throw
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 		$cli->scan( array(), array( 'dry-run' => false ) );
 
 		$this->assertTrue( true, 'Scan should complete without errors on empty database' );
@@ -72,7 +72,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 		);
 
 		// Run scan function
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 		$cli->scan( array(), array( 'dry-run' => false ) );
 
 		// Both should have meta updated
@@ -117,7 +117,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 		);
 
 		// Run scan function
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 		$cli->scan( array(), array( 'dry-run' => false ) );
 
 		// All should have meta updated
@@ -146,7 +146,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 		);
 
 		// Run scan function
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 		$cli->scan( array(), array( 'dry-run' => false ) );
 
 		// All posts should have meta updated
@@ -171,7 +171,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 		);
 
 		// Run scan function
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 		$cli->scan( array(), array( 'dry-run' => false ) );
 
 		// Should still update meta
@@ -194,7 +194,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 		);
 
 		// Run scan function
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 		$cli->scan( array(), array( 'dry-run' => false ) );
 
 		// Should handle special characters without issues
@@ -215,7 +215,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 		);
 
 		// Run scan function
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 		$cli->scan( array(), array( 'dry-run' => false ) );
 
 		// Pending posts should also be processed
@@ -237,7 +237,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 		);
 
 		// Run scan function
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 		$cli->scan( array(), array( 'dry-run' => false ) );
 
 		// Future posts should also be processed
@@ -267,7 +267,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 		);
 
 		// Run scan function with custom post type included
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 		$cli->scan(
 			array(),
 			array(
@@ -301,7 +301,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 		update_post_meta( $post_id, 'wpmudev_test_last_scan', $old_meta );
 
 		// Run scan function
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 		$cli->scan( array(), array( 'dry-run' => false ) );
 
 		// Meta should be updated with new value
@@ -325,7 +325,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 		);
 
 		// Run scan function
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 		$cli->scan( array(), array( 'dry-run' => false ) );
 
 		// Should handle long content without issues
@@ -348,7 +348,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 		);
 
 		// Run scan function
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 		$cli->scan( array(), array( 'dry-run' => false ) );
 
 		// Should handle HTML content without issues
@@ -371,7 +371,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 		);
 
 		// Run scan function
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 		$cli->scan( array(), array( 'dry-run' => false ) );
 
 		// Should handle Unicode content without issues
@@ -391,7 +391,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 			)
 		);
 
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 
 		// Run scan first time
 		$cli->scan( array(), array( 'dry-run' => false ) );
@@ -424,7 +424,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 
 		// Mock a database error by temporarily breaking the database connection
 		// This is a simplified test - in a real scenario, you might use mocking
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 
 		// The scan should not throw fatal errors even if there are issues
 		$cli->scan( array(), array( 'dry-run' => false ) );
@@ -447,7 +447,7 @@ class PostsMaintenanceTest extends WP_UnitTestCase {
 		);
 
 		// Run scan function
-		$cli = new \WPMUDEV\PluginTest\App\CLI\Posts_Maintenance_CLI();
+		$cli = new \WPMUDEV\PluginTest\App\CLI\PostsMaintenanceCLI();
 		$cli->scan( array(), array( 'dry-run' => false ) );
 
 		// Check that we haven't exceeded memory limits (skip if unlimited)

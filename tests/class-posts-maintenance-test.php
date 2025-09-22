@@ -13,7 +13,7 @@ namespace WPMUDEV\PluginTest\App\CLI;
  * This class provides the same functionality as PostsMaintenanceCLI
  * but without WP_CLI dependencies for unit testing.
  */
-class Posts_Maintenance_CLI {
+class PostsMaintenanceCLI {
 
 	/**
 	 * Scan posts for maintenance.

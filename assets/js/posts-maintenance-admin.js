@@ -37,19 +37,19 @@
             var self = this;
 
             // Start scan button
-            $(document).on('click', '#wpmudev-start-scan', function(e) {
+            $(document).on('click', '#start-scan', function(e) {
                 e.preventDefault();
                 self.startScan();
             });
 
             // Stop scan button
-            $(document).on('click', '#wpmudev-stop-scan', function(e) {
+            $(document).on('click', '#stop-scan', function(e) {
                 e.preventDefault();
                 self.stopScan();
             });
 
             // Reset scan button
-            $(document).on('click', '#wpmudev-reset-scan', function(e) {
+            $(document).on('click', '#reset-status', function(e) {
                 e.preventDefault();
                 self.resetScan();
             });
@@ -75,6 +75,9 @@
         loadInitialState: function() {
             var self = this;
             
+            // Hide progress bar by default
+            $('#progress-bar').hide();
+            
             // Check if there's an active scan
             $.post(this.config.ajaxUrl, {
                 action: 'wpmudev_get_scan_progress',
@@ -87,10 +90,17 @@
                     if (response.data.is_running) {
                         self.state.isScanning = true;
                         self.startPolling();
+                    } else {
+                        // Ensure scanning state is false if no scan is running
+                        self.state.isScanning = false;
+                        self.updateButtons(false);
                     }
                 }
             }).fail(function() {
                 self.showNotification('error', 'Failed to load scan status');
+                // Ensure scanning state is false on error
+                self.state.isScanning = false;
+                self.updateButtons(false);
             });
         },
 
@@ -126,6 +136,9 @@
                 total_posts: 0,
                 status: 'starting'
             });
+            
+            // Ensure progress bar is visible
+            $('#progress-bar').show();
 
             // Start the scan
             $.post(this.config.ajaxUrl, {
@@ -255,8 +268,12 @@
 
         // Update UI based on scan data
         updateUI: function(data) {
-            // Update progress bar
-            this.updateProgressBar(data.progress || 0);
+            // Update progress bar with post counts
+            this.updateProgressBar(
+                data.progress || 0,
+                data.processed_posts,
+                data.total_posts
+            );
             
             // Update statistics
             this.updateStatistics(data);
@@ -271,54 +288,89 @@
             if (data.notification) {
                 this.showNotification(data.notification.type, data.notification.message);
             }
+            
+            // Handle scan completion and reset redirects
+            this.handleScanCompletion(data);
         },
 
         // Update progress bar
-        updateProgressBar: function(progress) {
-            var $progressBar = $('.wpmudev-progress-bar');
-            var $progressText = $('.wpmudev-progress-text');
+        updateProgressBar: function(progress, processedPosts, totalPosts) {
+            var $progressBar = $('.progress-fill');
+            var $progressContainer = $('#progress-bar');
+            var $progressText = $('#progress-text');
+            
+            // Ensure progress is a valid number between 0 and 100
+            var validProgress = 0;
+            if (typeof progress === 'number' && !isNaN(progress)) {
+                validProgress = Math.max(0, Math.min(100, progress));
+            }
             
             if ($progressBar.length) {
-                $progressBar.css('width', progress + '%');
+                $progressBar.css('width', validProgress + '%');
+            }
+            
+            // Show progress bar only when scanning
+            if ($progressContainer.length) {
+                if (this.state.isScanning) {
+                    $progressContainer.show();
+                } else {
+                    $progressContainer.hide();
+                }
             }
             
             if ($progressText.length) {
-                $progressText.text(Math.round(progress) + '%');
+                var progressText = '';
+                if (processedPosts !== undefined && totalPosts !== undefined) {
+                    progressText = processedPosts + ' / ' + totalPosts + ' posts (' + Math.round(validProgress) + '%)';
+                } else {
+                    progressText = Math.round(validProgress) + '%';
+                }
+                $progressText.text(progressText);
+            }
+        },
+
+        // Handle scan completion
+        handleScanCompletion: function(data) {
+            // Check if scan is completed
+            if (!data.is_running && (data.status === 'completed' || data.status === 'stopped')) {
+                // Reset scanning state
+                this.state.isScanning = false;
+                
+                // Hide progress bar after completion
+                $('#progress-bar').hide();
+                
+                // Show completion message
+                if (data.status === 'completed') {
+                    this.showNotification('success', 'Scan completed successfully!');
+                } else if (data.status === 'stopped') {
+                    this.showNotification('warning', 'Scan stopped.');
+                }
+                
+                // Update buttons to enable start button
+                this.updateButtons(false);
             }
         },
 
         // Update statistics
         updateStatistics: function(data) {
-            // Update processed posts
-            if (data.processed_posts !== undefined) {
-                $('.wpmudev-stat-processed .wpmudev-stat-number').text(data.processed_posts);
-            }
-            
-            // Update total posts
-            if (data.total_posts !== undefined) {
-                $('.wpmudev-stat-total .wpmudev-stat-number').text(data.total_posts);
-            }
-            
-            // Update current batch
-            if (data.current_batch !== undefined) {
-                $('.wpmudev-stat-batch .wpmudev-stat-number').text(data.current_batch);
-            }
-            
-            // Update total batches
-            if (data.total_batches !== undefined) {
-                $('.wpmudev-stat-total-batches .wpmudev-stat-number').text(data.total_batches);
+            // Update status display with progress information
+            if (data.processed_posts !== undefined && data.total_posts !== undefined) {
+                var statusText = this.getStatusText(data.status || 'idle');
+                if (data.is_running) {
+                    statusText += ' (' + data.processed_posts + '/' + data.total_posts + ')';
+                }
+                $('#current-status').text(statusText);
             }
         },
 
         // Update status
         updateStatus: function(status) {
-            var $statusElement = $('.wpmudev-status');
-            var statusClass = 'wpmudev-status-' + status;
+            var $statusElement = $('#current-status');
             
-            $statusElement.removeClass().addClass('wpmudev-status').addClass(statusClass);
-            
-            var statusText = this.getStatusText(status);
-            $statusElement.text(statusText);
+            if ($statusElement.length) {
+                var statusText = this.getStatusText(status);
+                $statusElement.text(statusText);
+            }
         },
 
         // Get status text
@@ -338,9 +390,9 @@
 
         // Update buttons
         updateButtons: function(isRunning) {
-            var $startBtn = $('#wpmudev-start-scan');
-            var $stopBtn = $('#wpmudev-stop-scan');
-            var $resetBtn = $('#wpmudev-reset-scan');
+            var $startBtn = $('#start-scan');
+            var $stopBtn = $('#stop-scan');
+            var $resetBtn = $('#reset-status');
             
             if (isRunning) {
                 $startBtn.prop('disabled', true).addClass('wpmudev-hidden');
@@ -357,7 +409,7 @@
 
         // Update start button state
         updateStartButtonState: function() {
-            var $startBtn = $('#wpmudev-start-scan');
+            var $startBtn = $('#start-scan');
             var hasPostTypes = $('input[name="post_types[]"]:checked').length > 0;
             var batchSize = parseInt($('#batch_size').val()) || 0;
             var isValidBatchSize = batchSize >= 1 && batchSize <= 100;
@@ -371,26 +423,27 @@
 
         // Show notification
         showNotification: function(type, message) {
-            var notificationClass = 'wpmudev-notification-' + type;
-            var icon = this.getNotificationIcon(type);
-            var notificationId = 'notification-' + Date.now();
+            // Use WordPress admin notice system
+            var noticeClass = 'notice notice-' + type + ' is-dismissible';
+            var noticeId = 'notification-' + Date.now();
             
-            var notificationHtml = '<div id="' + notificationId + '" class="wpmudev-notification ' + notificationClass + ' wpmudev-fade-in">' +
-                '<span class="wpmudev-notification-icon">' + icon + '</span>' +
-                '<span class="wpmudev-notification-message">' + message + '</span>' +
-                '<button type="button" class="wpmudev-clear-notification" data-notification-id="' + notificationId + '" style="margin-left: auto; background: none; border: none; font-size: 16px; cursor: pointer;">&times;</button>' +
+            var noticeHtml = '<div id="' + noticeId + '" class="' + noticeClass + '">' +
+                '<p>' + message + '</p>' +
+                '<button type="button" class="notice-dismiss" onclick="jQuery(\'#' + noticeId + '\').fadeOut(300, function() { jQuery(this).remove(); });">' +
+                '<span class="screen-reader-text">Dismiss this notice.</span>' +
+                '</button>' +
                 '</div>';
             
-            // Remove existing notifications of the same type
-            $('.wpmudev-notification-' + type).remove();
+            // Remove existing notices
+            $('.notice').remove();
             
-            // Add new notification
-            $('.wpmudev-posts-maintenance').prepend(notificationHtml);
+            // Add new notice after the h1
+            $('.wrap h1').after(noticeHtml);
             
             // Auto-remove success notifications after 5 seconds
             if (type === 'success') {
                 setTimeout(function() {
-                    $('#' + notificationId).fadeOut(300, function() {
+                    $('#' + noticeId).fadeOut(300, function() {
                         $(this).remove();
                     });
                 }, 5000);

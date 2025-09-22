@@ -17,6 +17,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+// Prevent loading during PHPUnit tests to avoid conflicts
+if ( defined( 'PHPUNIT_RUNNING' ) && PHPUNIT_RUNNING ) {
+	return;
+}
+
 
 // Load Composer autoloader
 if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {

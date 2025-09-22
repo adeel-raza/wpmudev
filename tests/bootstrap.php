@@ -1,4 +1,7 @@
 <?php
+// Define PHPUnit running constant to prevent plugin conflicts
+define( 'PHPUNIT_RUNNING', true );
+
 // Load Composer autoloader.
 require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 
@@ -21,7 +24,14 @@ require_once $_tests_dir . '/includes/functions.php';
 
 // Manually load your plugin for testing.
 function _manually_load_plugin() {
-	require dirname( __DIR__ ) . '/wpmudev-plugin-test.php';
+	// Load plugin files directly to avoid WordPress function conflicts
+	require_once dirname( __DIR__ ) . '/core/class-base.php';
+	require_once dirname( __DIR__ ) . '/core/class-singleton.php';
+	require_once dirname( __DIR__ ) . '/core/class-loader.php';
+	require_once dirname( __DIR__ ) . '/app/admin-pages/class-posts-maintenance.php';
+	
+	// Load the test version of CLI class (not the real one to avoid WP-CLI dependencies)
+	require_once dirname( __FILE__ ) . '/class-posts-maintenance-test.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
