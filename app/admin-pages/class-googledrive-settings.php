@@ -338,7 +338,7 @@ class Google_Drive extends Base {
 			'client_configured' => $client_configured,
 			'current_state'     => $current_state,
 			'redirect_uri'      => 'https://4b8375fd38b2.ngrok-free.app/wp-json/wpmudev/v1/drive/callback',
-			
+
 			'required_scopes'   => array(
 				'https://www.googleapis.com/auth/drive.file',
 				'https://www.googleapis.com/auth/drive.readonly',
